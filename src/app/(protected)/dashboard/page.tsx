@@ -2,11 +2,11 @@
 
 import { useQuery } from '@tanstack/react-query';
 
-import { getLeaderboard, type LeaderboardUser } from '@/api/users';
+import { getLeaderboard } from '@/api/users';
 import NotificationsSender from '@/components/NotificationsSender';
 
 function Dashboard() {
-  const { data, error, isLoading } = useQuery<LeaderboardUser[], Error>({
+  useQuery({
     queryKey: ['leaderboard'],
     queryFn: async () => {
       const res = await getLeaderboard();
