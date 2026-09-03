@@ -42,11 +42,12 @@ api.interceptors.response.use(
         await api.post<ApiResponse>('/refreshToken', {}, { withCredentials: true });
         return api(originalRequest);
       } catch {
-        // Handle refresh token error or redirect to login
+        // If the refresh fails, the session is genuinely dead. Reject so the caller knows, and redirect to login.
         toast.error('Session expired. Please login again.');
         setTimeout(() => {
           window.location.href = '/';
         }, 2000);
+        return Promise.reject(error);
       }
     }
 

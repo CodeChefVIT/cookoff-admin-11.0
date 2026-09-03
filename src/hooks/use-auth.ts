@@ -3,10 +3,13 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { getLeaderboard } from '@/api/users';
+
 // Redirects unauthenticated users to the login page. Verifies the session by
-// calling a protected admin endpoint with credentials; any non-2xx response is
-// treated as unauthenticated. Uses fetch directly to read the real status code,
-// bypassing the axios interceptor that would otherwise mask a 401.
+// calling a protected admin endpoint through the axios client so the
+// token-refresh interceptor runs first — an expired access token with a valid
+// refresh token is silently refreshed rather than logged out. Only a genuine
+// refresh failure (rejected request) redirects to login.
 export function useAuth() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -17,13 +20,8 @@ export function useAuth() {
 
     async function checkAuth() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASEURL}/admin/leaderboard`, {
-          credentials: 'include',
-        });
-        if (active) {
-          setIsAuthenticated(res.ok);
-          if (!res.ok) router.replace('/');
-        }
+        await getLeaderboard();
+        if (active) setIsAuthenticated(true);
       } catch {
         if (active) router.replace('/');
       } finally {
