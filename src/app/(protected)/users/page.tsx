@@ -20,11 +20,13 @@ const Page = () => {
   const [cursorHistory, setCursorHistory] = useState<(string | undefined)[]>([]);
 
   // Fetch users with React Query
-  const { data, error, isLoading, isFetching } = useQuery<GetUsersResponse, Error>({
+  const { data, error, isLoading, isFetching, refetch } = useQuery<GetUsersResponse, Error>({
     queryKey: ['users', cursor],
     queryFn: () => getUsers(PAGE_LIMIT, cursor),
     keepPreviousData: true,
   });
+
+  const pageNumber = cursorHistory.length + 1;
 
   // Handle row selection in the table
   const handleRowSelectionChange = (rowSelection: Record<string, boolean>) => {
@@ -67,26 +69,41 @@ const Page = () => {
           <ClientTable
             data={data?.users ?? []}
             error={error ?? null}
-            isLoading={isLoading || isFetching}
+            isLoading={isLoading}
             columns={UserDataColumn}
             enableRowSelection
+            hidePagination
+            onRetry={() => refetch()}
             onRowSelectionChange={handleRowSelectionChange}
           />
         </div>
 
-        <div className="mt-4 flex justify-between">
+        <div className="mt-4 flex items-center justify-between gap-4">
           <button
             onClick={handlePrevPage}
             disabled={cursorHistory.length === 0}
-            className="rounded bg-gray-700 px-4 py-2 disabled:opacity-50"
+            className={`rounded-md border border-gray-700 bg-[#182319] px-4 py-2 text-sm font-semibold transition-colors duration-150 hover:border-[#1ba94c] hover:bg-[#1ba94c]/10 ${
+              cursorHistory.length === 0 || isFetching
+                ? 'cursor-not-allowed opacity-40 hover:border-gray-700 hover:bg-[#182319]'
+                : ''
+            }`}
           >
             Previous
           </button>
 
+          <span className="text-sm tabular-nums text-gray-500">
+            Page <span className="font-medium text-white">{pageNumber}</span>
+            {data?.next_cursor && <span className="text-gray-500"> · more pages</span>}
+          </span>
+
           <button
             onClick={handleNextPage}
             disabled={!data?.next_cursor}
-            className="rounded bg-gray-700 px-4 py-2 disabled:opacity-50"
+            className={`rounded-md border border-gray-700 bg-[#182319] px-4 py-2 text-sm font-semibold transition-colors duration-150 hover:border-[#1ba94c] hover:bg-[#1ba94c]/10 ${
+              !data?.next_cursor || isFetching
+                ? 'cursor-not-allowed opacity-40 hover:border-gray-700 hover:bg-[#182319]'
+                : ''
+            }`}
           >
             Next
           </button>

@@ -13,7 +13,7 @@ const ACCENT_GREEN = '#1ba94c';
 const ACCENT_COLOR_TEXT = 'text-[#1ba94c]';
 
 const Page = () => {
-  const { data, error, isLoading } = useQuery<QuestionResponse[], Error>({
+  const { data, error, isLoading, refetch } = useQuery<QuestionResponse[], Error>({
     queryKey: ['questions'],
     queryFn: GetAllQuestions,
   });
@@ -40,6 +40,7 @@ const Page = () => {
             error={error}
             isLoading={isLoading}
             columns={QuestionsDataColumn}
+            onRetry={() => refetch()}
           />
         </div>
       </div>
