@@ -13,9 +13,7 @@ const AreyBC = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="">
       <Providers>
-        <div className={`ml- flex flex-col ${hasSidebar ? 'ml-44 p-12' : ''} bg-black`}>
-          {children}
-        </div>
+        <div className={`flex flex-col ${hasSidebar ? 'ml-44 p-12' : ''} bg-black`}>{children}</div>
       </Providers>
     </div>
   );
