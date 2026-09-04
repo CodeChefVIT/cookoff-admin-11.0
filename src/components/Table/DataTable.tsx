@@ -37,6 +37,7 @@ interface DataTableProps<TData> {
   data: TData[];
   state: { rowSelection: RowSelectionState };
   enableRowSelection?: boolean;
+  hidePagination?: boolean;
   onRowSelectionChange?: (rowSelection: RowSelectionState) => void;
 }
 
@@ -44,6 +45,7 @@ export function DataTable<TData>({
   columns,
   data,
   enableRowSelection = false,
+  hidePagination = false,
   onRowSelectionChange,
 }: DataTableProps<TData>) {
   const pageSize = 10;
@@ -73,9 +75,17 @@ export function DataTable<TData>({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  React.useEffect(() => {
+    const pageCount = table.getPageCount();
+    const pageIndex = table.getState().pagination.pageIndex;
+    if (pageCount > 0 && pageIndex > pageCount - 1) {
+      table.setPageIndex(pageCount - 1);
+    }
+  }, [table, table.getFilteredRowModel().rows.length, table.getState().pagination.pageSize]);
+
   return (
     <div className={`space-y-3 rounded-xl border ${BORDER_COLOR} p-4 ${CARD_BG}`}>
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table} hidePagination={hidePagination} />
 
       <div className="relative overflow-hidden overflow-x-auto rounded-lg">
         <Table className={`w-full border-collapse`}>
@@ -143,7 +153,9 @@ export function DataTable<TData>({
         </Table>
       </div>
 
-      <DataTablePagination table={table} pageSize={table.getState().pagination.pageSize} />
+      {!hidePagination && (
+        <DataTablePagination table={table} pageSize={table.getState().pagination.pageSize} />
+      )}
     </div>
   );
 }

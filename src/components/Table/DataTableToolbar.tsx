@@ -33,9 +33,13 @@ const PRIMARY_BUTTON_HOVER = `hover:bg-[#15803d]`;
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
+  hidePagination?: boolean;
 }
 
-export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
+export function DataTableToolbar<TData>({
+  table,
+  hidePagination = false,
+}: DataTableToolbarProps<TData>) {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -60,9 +64,8 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
       toast.success('Users successfully promoted!');
     },
     onError: (err: ApiError) => {
-      const errorMessage = (err as any)?.message || 'Failed to promote users.';
-      console.error('Error occurred while promoting users:', err);
-      toast.error(`Error: ${errorMessage}`);
+      const errorMessage = (err as { message?: string })?.message ?? 'Failed to promote users.';
+      toast.error(errorMessage);
     },
   });
 
@@ -78,13 +81,12 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
         .promise(promoteUsers.mutateAsync({ ...data, user_ids: userIds }), {
           loading: 'Promoting Users...',
           success: 'Success!',
-          error: (err: ApiError) => (err as any).message || 'Promotion failed.',
+          error: (err: ApiError) => (err as { message?: string })?.message ?? 'Promotion failed.',
         })
         .catch(error => {
           console.error('Unexpected error during promotion:', error);
         });
     } else {
-      console.error('No users selected.');
       toast.error('No users selected for promotion.');
     }
   };
@@ -110,31 +112,37 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
           />
         </div>
 
-        <div className="hidden sm:block">
-          <Select
-            value={`${table.getState().pagination.pageSize}`}
-            onValueChange={value => {
-              table.setPageSize(Number(value));
-            }}
-          >
-            <SelectTrigger
-              className={`h-9 w-36 rounded-md border border-gray-700 ${INPUT_BG} ${ACCENT_COLOR_TEXT} transition focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+        {!hidePagination && (
+          <div className="hidden sm:block">
+            <Select
+              value={`${table.getState().pagination.pageSize}`}
+              onValueChange={value => {
+                table.setPageSize(Number(value));
+                table.setPageIndex(0);
+              }}
             >
-              <SelectValue placeholder={`Per Page ${table.getState().pagination.pageSize}`} />
-            </SelectTrigger>
-            <SelectContent side="bottom" className={`rounded-lg border border-gray-700 ${CARD_BG}`}>
-              {[10, 20, 30, 40, 50, 100].map(pageSize => (
-                <SelectItem
-                  key={pageSize}
-                  value={`${pageSize}`}
-                  className={`text-white hover:bg-[${ACCENT_GREEN}]/10 focus:bg-[${ACCENT_GREEN}]/20 cursor-pointer`}
-                >
-                  Per Page {pageSize}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+              <SelectTrigger
+                className={`h-9 w-36 rounded-md border border-gray-700 ${INPUT_BG} ${ACCENT_COLOR_TEXT} transition focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+              >
+                <SelectValue placeholder={`Per Page ${table.getState().pagination.pageSize}`} />
+              </SelectTrigger>
+              <SelectContent
+                side="bottom"
+                className={`rounded-lg border border-gray-700 ${CARD_BG}`}
+              >
+                {[10, 20, 30, 40, 50, 100].map(pageSize => (
+                  <SelectItem
+                    key={pageSize}
+                    value={`${pageSize}`}
+                    className={`text-white hover:bg-[${ACCENT_GREEN}]/10 focus:bg-[${ACCENT_GREEN}]/20 cursor-pointer`}
+                  >
+                    Per Page {pageSize}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
 
         {pathname.includes('/users') && (
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
