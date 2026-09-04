@@ -70,14 +70,12 @@ export async function getUsers(limit?: number, cursor?: string) {
       params,
     });
 
-    const data = response.data;
     return {
-      ...data,
-      next_cursor: data.next_cursor ?? undefined,
+      ...response.data,
+      next_cursor: response.data.next_cursor ?? undefined,
     };
   } catch (error) {
-    console.error(error);
-    return { status: 'error', users: [], next_cursor: undefined };
+    throw handleAPIError(error);
   }
 }
 

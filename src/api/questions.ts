@@ -69,9 +69,8 @@ export async function GetAllQuestions() {
   try {
     const response = await api.get<QuestionsApiResponse>('/question');
     return response.data.questions;
-  } catch (e) {
-    console.log(e);
-    return [];
+  } catch (error) {
+    throw handleAPIError(error);
   }
 }
 
