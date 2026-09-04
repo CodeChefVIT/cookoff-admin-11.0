@@ -114,20 +114,22 @@ const CreateButton = () => {
     const fetchQuestion = async () => {
       try {
         const q = await GetQuestionById(params.qid);
-        setQuestion(q.question);
-        setDescription(q.question.Description ?? '');
+        const question = q.question[0];
+        if (!question) return;
+        setQuestion(question);
+        setDescription(question.Description ?? '');
 
-        setExplanations(q.question.Explanation ?? ['']);
-        setInputFormats(q.question.InputFormat ?? ['']);
-        setSampleOutputs(q.question.SampleTestOutput ?? ['']);
-        setSampleInputs(q.question.SampleTestInput ?? ['']);
+        setExplanations(question.Explanation ?? ['']);
+        setInputFormats(question.InputFormat ?? ['']);
+        setSampleOutputs(question.SampleTestOutput ?? ['']);
+        setSampleInputs(question.SampleTestInput ?? ['']);
 
-        setValue('Title', q.question.Title ?? '');
-        setValue('Description', q.question.Description ?? '');
-        setValue('Points', q.question.Points ?? 0);
-        setValue('Round', q.question.Round ?? 1);
-        setValue('Constraints.0', (q.question.Constraints ?? []).join('\n'));
-        setValue('OutputFormat.0', (q.question.OutputFormat ?? []).join('\n'));
+        setValue('Title', question.Title ?? '');
+        setValue('Description', question.Description ?? '');
+        setValue('Points', question.Points ?? 0);
+        setValue('Round', question.Round ?? 1);
+        setValue('Constraints.0', (question.Constraints ?? []).join('\n'));
+        setValue('OutputFormat.0', (question.OutputFormat ?? []).join('\n'));
       } catch (error) {
         console.error('Error fetching question:', error);
       }
@@ -152,7 +154,7 @@ const CreateButton = () => {
       return toast.promise(UpdateQuestion(data), {
         loading: 'Updating Question',
         success: 'Success!',
-        error: (err: ApiError) => (err as any).message || 'Error updating question',
+        error: (err: ApiError) => err.message || 'Error updating question',
       });
     },
     onSuccess: async () => {

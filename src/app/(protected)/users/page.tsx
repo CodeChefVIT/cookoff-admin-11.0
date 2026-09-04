@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import { getUsers, type GetUsersResponse } from '@/api/users';
 import ClientTable from '@/components/Table/ClientTable';
@@ -15,7 +15,7 @@ const DARK_BG = 'bg-[#0E150F]';
 const PAGE_LIMIT = 20;
 
 const Page = () => {
-  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+  const [, setSelectedUserIds] = useState<string[]>([]);
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const [cursorHistory, setCursorHistory] = useState<(string | undefined)[]>([]);
 
@@ -23,7 +23,7 @@ const Page = () => {
   const { data, error, isLoading, isFetching, refetch } = useQuery<GetUsersResponse, Error>({
     queryKey: ['users', cursor],
     queryFn: () => getUsers(PAGE_LIMIT, cursor),
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
   });
 
   const pageNumber = cursorHistory.length + 1;
@@ -33,7 +33,10 @@ const Page = () => {
     if (!data?.users) return;
     const selectedIds = Object.keys(rowSelection)
       .filter(id => rowSelection[id])
-      .map(rowIndex => data.users[parseInt(rowIndex)].ID);
+      .flatMap(rowIndex => {
+        const user = data.users[parseInt(rowIndex)];
+        return user ? [user.ID] : [];
+      });
 
     setSelectedUserIds(selectedIds);
   };

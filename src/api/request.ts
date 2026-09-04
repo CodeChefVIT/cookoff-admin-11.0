@@ -20,5 +20,5 @@ export async function request(
     if (!result.success) throw toApiError(result.error);
     return result.data;
   }
-  return response.data;
+  return response.data as unknown;
 }

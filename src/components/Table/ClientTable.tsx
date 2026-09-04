@@ -63,8 +63,9 @@ function ClientTable<T>({
       hidePagination={hidePagination}
       state={{ rowSelection }}
       onRowSelectionChange={updater => {
-        setRowSelection(updater);
-        onRowSelectionChange?.(updater);
+        const next = typeof updater === 'function' ? updater(rowSelection) : updater;
+        setRowSelection(next);
+        onRowSelectionChange?.(next);
       }}
     />
   );

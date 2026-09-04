@@ -51,7 +51,7 @@ const Create = () => {
       return toast.promise(CreateQuestion(data), {
         loading: 'Adding Question',
         success: 'Success!',
-        error: (err: ApiError) => (err as any).message || 'Error creating question',
+        error: (err: ApiError) => err.message || 'Error creating question',
       });
     },
     onSuccess: async () => {
@@ -147,23 +147,6 @@ const Create = () => {
     >
       {children}
     </Label>
-  );
-
-  const FormInput = ({
-    id,
-    placeholder,
-    children,
-  }: {
-    id: string;
-    placeholder: string;
-    children: React.ReactNode;
-  }) => (
-    <Input
-      id={id}
-      placeholder={placeholder}
-      className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
-      {...children}
-    />
   );
 
   return (

@@ -144,7 +144,7 @@ export default function AnalyticsSection() {
                   innerRadius={50}
                   paddingAngle={3}
                   labelLine={false}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) => `${name}: ${(Number(percent) * 100).toFixed(0)}%`}
                   stroke="none"
                 >
                   {languageData.map((_, index) => (
@@ -152,7 +152,7 @@ export default function AnalyticsSection() {
                   ))}
                 </Pie>
                 <Tooltip
-                  formatter={(value, name) => [`${value} Submissions`, name]}
+                  formatter={(value, name) => [`${String(value)} Submissions`, name]}
                   contentStyle={{
                     backgroundColor: CARD_BG,
                     border: `1px solid ${ACCENT_GREEN}`,

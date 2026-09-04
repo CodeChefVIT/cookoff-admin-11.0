@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { FieldValues, UseFormProps, UseFormReturn } from 'react-hook-form';
+import type { FieldValues, Resolver, UseFormProps, UseFormReturn } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import type { ZodType } from 'zod';
 
@@ -11,6 +11,8 @@ export function useZodForm<TValues extends FieldValues>(
 ): UseFormReturn<TValues> {
   return useForm<TValues>({
     ...options,
-    resolver: zodResolver(schema),
+    resolver: (
+      zodResolver as unknown as (schema: ZodType<TValues>) => Resolver<TValues, unknown, TValues>
+    )(schema),
   });
 }

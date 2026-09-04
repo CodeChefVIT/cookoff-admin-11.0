@@ -45,9 +45,9 @@ export function DataTableToolbar<TData>({
 
   const pathname = usePathname();
 
-  const { register, handleSubmit, setValue, reset, getValues } = useForm<SetUserRoundProps>({
+  const { register, handleSubmit, reset, getValues } = useForm<SetUserRoundProps>({
     defaultValues: {
-      round: '1',
+      round: 1,
       user_ids: [],
     },
   });
@@ -73,12 +73,17 @@ export function DataTableToolbar<TData>({
     const selectedRows = table.getSelectedRowModel().rows;
 
     const userIds: string[] = selectedRows
-      .map((row: any) => row.original.ID)
+      .map(row => (row.original as { ID?: string }).ID)
       .filter((id): id is string => !!id);
 
     if (userIds.length > 0) {
+      const payload: SetUserRoundProps = {
+        ...data,
+        round: data.round === undefined ? undefined : Number(data.round),
+        user_ids: userIds,
+      };
       toast
-        .promise(promoteUsers.mutateAsync({ ...data, user_ids: userIds }), {
+        .promise(promoteUsers.mutateAsync(payload), {
           loading: 'Promoting Users...',
           success: 'Success!',
           error: (err: ApiError) => (err as { message?: string })?.message ?? 'Promotion failed.',
