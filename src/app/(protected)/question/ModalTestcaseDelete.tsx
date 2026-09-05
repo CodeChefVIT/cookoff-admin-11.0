@@ -16,7 +16,6 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-const ACCENT_GREEN = '#1ba94c';
 const CARD_BG = 'bg-[#182319]';
 const RED_BG = 'bg-red-600';
 const RED_HOVER = 'hover:bg-red-500';

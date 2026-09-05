@@ -36,5 +36,14 @@ const config = {
       },
     ],
   },
+  overrides: [
+    {
+      // Declaration files legitimately type ambient modules (e.g. `*.svg`) with `any`.
+      files: ['*.d.ts'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+      },
+    },
+  ],
 };
 module.exports = config;

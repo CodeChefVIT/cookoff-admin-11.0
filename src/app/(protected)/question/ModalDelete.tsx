@@ -20,7 +20,6 @@ import {
 
 import { type QuestionsDataProps } from './questions-columns';
 
-const ACCENT_GREEN = '#1ba94c';
 const CARD_BG = 'bg-[#182319]';
 const RED_BG = 'bg-red-600';
 const RED_HOVER = 'hover:bg-red-500';
@@ -41,7 +40,7 @@ const ModalDelete = ({
       return toast.promise(DeleteQuestion(id), {
         loading: 'Deleting Question',
         success: 'Success!',
-        error: (err: ApiError) => (err as any).message || 'Error deleting question',
+        error: (err: ApiError) => err.message || 'Error deleting question',
       });
     },
     onSuccess: async () => {

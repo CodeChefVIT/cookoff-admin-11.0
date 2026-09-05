@@ -42,7 +42,8 @@ const UserSubmissionsPage = () => {
 
   useEffect(() => {
     if (userData?.submissions && userData.submissions.length > 0) {
-      const firstSubmission = userData.submissions[0];
+      const firstSubmission = userData.submissions[0] ?? null;
+      if (!firstSubmission) return;
       setSelectedSubmission(firstSubmission);
       setSelectedQuestion(firstSubmission.submission.QuestionID);
       setSelectedTestcaseIndex(0);
@@ -185,7 +186,7 @@ const UserSubmissionsPage = () => {
           {/* Submission List (The Scrollable Area) */}
           {/* flex-1 ensures it fills the available vertical space, and overflow-y-auto makes the list scrollable */}
           <div className="flex flex-1 flex-col space-y-2 overflow-y-auto">
-            {submissionsForSelectedQuestion.map((s, index) => {
+            {submissionsForSelectedQuestion.map(s => {
               const isSelected = selectedSubmission?.submission.ID === s.submission.ID;
               const isSuccess = s.submission.TestcasesFailed === 0;
 
@@ -209,8 +210,8 @@ const UserSubmissionsPage = () => {
                         isSuccess ? 'bg-green-600 text-black' : 'bg-red-600 text-white'
                       }`}
                     >
-                      {s.submission.TestcasesPassed}/
-                      {s.submission.TestcasesFailed + s.submission.TestcasesPassed}
+                      {s.submission.TestcasesPassed ?? 0}/
+                      {(s.submission.TestcasesFailed ?? 0) + (s.submission.TestcasesPassed ?? 0)}
                     </span>
                   </div>
                 </div>

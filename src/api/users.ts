@@ -134,7 +134,7 @@ export async function getLeaderboard() {
   }
 }
 
-export async function SetUserRound({ user_ids, round }: SetUserRoundProps) {
+export async function SetUserRound({ user_ids }: SetUserRoundProps) {
   try {
     const results = await Promise.all(user_ids.map(id => upgradeUserToRound(id)));
     return results;

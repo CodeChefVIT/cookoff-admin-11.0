@@ -65,7 +65,7 @@ export default {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [require('tailwindcss-animate')], // eslint-disable-line @typescript-eslint/no-require-imports -- Tailwind loads CJS plugins by design
   // The app builds accent classes via template interpolation (e.g. `bg-[${ACCENT_GREEN}]`),
   // which Tailwind's static scan cannot see. Safelist the concrete classes they produce.
   safelist: [

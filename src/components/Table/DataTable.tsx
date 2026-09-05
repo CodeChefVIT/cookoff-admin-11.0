@@ -10,6 +10,7 @@ import {
   useReactTable,
   type ColumnDef,
   type RowSelectionState,
+  type Updater,
 } from '@tanstack/react-table';
 import { cx } from 'class-variance-authority';
 
@@ -38,7 +39,7 @@ interface DataTableProps<TData> {
   state: { rowSelection: RowSelectionState };
   enableRowSelection?: boolean;
   hidePagination?: boolean;
-  onRowSelectionChange?: (rowSelection: RowSelectionState) => void;
+  onRowSelectionChange?: (updaterOrValue: Updater<RowSelectionState>) => void;
 }
 
 export function DataTable<TData>({

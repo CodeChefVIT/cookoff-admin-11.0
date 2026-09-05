@@ -20,8 +20,6 @@ import { TestcaseDataColumn } from './TestcaseColumns';
 const ACCENT_GREEN = '#1ba94c';
 const ACCENT_COLOR_TEXT = 'text-[#1ba94c]';
 const CARD_BG = 'bg-[#182319]';
-const PRIMARY_BUTTON_BG = `bg-[${ACCENT_GREEN}]`;
-const PRIMARY_BUTTON_HOVER = `hover:bg-[#15803d]`;
 
 interface ModalGetTestcaseProps {
   id: string;

@@ -61,7 +61,7 @@ const ModalTestcaseUpdate = ({ row, children }: ModalTestcaseUpdateProps) => {
       });
     },
     onSuccess: async () => {
-      const questionID = (row.original as any).questionID;
+      const questionID = row.original.QuestionID;
       if (questionID) {
         await queryClient.invalidateQueries({
           queryKey: ['testcases', questionID],
