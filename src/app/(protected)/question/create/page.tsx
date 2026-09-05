@@ -15,11 +15,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
-const ACCENT_GREEN = '#1ba94c';
 const ACCENT_COLOR_TEXT = 'text-[#1ba94c]';
 const CARD_BG = 'bg-[#182319]';
 const INPUT_BG = 'bg-[#253026]';
-const PRIMARY_BUTTON_BG = `bg-[${ACCENT_GREEN}]`;
+const PRIMARY_BUTTON_BG = 'bg-[#1ba94c]';
 const PRIMARY_BUTTON_HOVER = `hover:bg-[#15803d]`;
 const BUTTON_TEXT_COLOR = 'text-black';
 const DELETE_COLOR = 'text-red-500';
@@ -37,7 +36,7 @@ const Create = () => {
   const [explanations, setExplanations] = useState<string[]>(['']);
   const [inputFormats, setInputFormats] = useState<string[]>(['']);
   const [scratchBlocks, setScratchBlocks] = useState<string[]>(['']);
-  const [description, setDescription] = useState<string>('CodeChef is gay');
+  const [description, setDescription] = useState<string>('');
 
   const createQuestion = useMutation({
     mutationFn: async (data: CreateQuestionParams) => {
@@ -50,6 +49,10 @@ const Create = () => {
       data.SampleTestOutput = sampleOutputs;
       data.Explanation = explanations;
       data.ScratchBlocks = scratchBlocks;
+      data.Qtype = +data.Round === 1 ? 'visual' : 'code';
+      data.Isbountyactive = Boolean(data.Isbountyactive);
+      data.BuyIn = data.BuyIn ? +data.BuyIn : undefined;
+      data.Reward = data.Reward ? +data.Reward : undefined;
 
       return toast.promise(CreateQuestion(data), {
         loading: 'Adding Question',
@@ -146,7 +149,7 @@ const Create = () => {
       className={`h-9 whitespace-nowrap rounded-md px-3 shadow-md transition-all duration-200 ${
         isDelete
           ? `${DELETE_COLOR} ${DELETE_HOVER_BG} border border-red-500/50 bg-transparent hover:text-red-400`
-          : `${PRIMARY_BUTTON_BG} ${PRIMARY_BUTTON_HOVER} ${BUTTON_TEXT_COLOR} shadow-[${ACCENT_GREEN}]/50`
+          : `${PRIMARY_BUTTON_BG} ${PRIMARY_BUTTON_HOVER} ${BUTTON_TEXT_COLOR} shadow-[#1ba94c]/50`
       }`}
     >
       {children}
@@ -166,7 +169,7 @@ const Create = () => {
     <div className={`m-10 mx-auto max-w-5xl space-y-10 text-white`}>
       <div className="flex items-center">
         <h1
-          className={`flex-grow text-center text-3xl font-extrabold uppercase tracking-widest ${ACCENT_COLOR_TEXT} border-b border-[${ACCENT_GREEN}]/50 pb-2`}
+          className={`flex-grow text-center text-3xl font-extrabold uppercase tracking-widest ${ACCENT_COLOR_TEXT} border-b border-[#1ba94c]/50 pb-2`}
         >
           Create New Question
         </h1>
@@ -179,7 +182,7 @@ const Create = () => {
             {...register('Round')}
             defaultValue={1}
             id="round"
-            className={`col-span-3 rounded-md border border-gray-700 ${INPUT_BG} p-2 text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+            className={`col-span-3 rounded-md border border-gray-700 ${INPUT_BG} p-2 text-white focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]`}
             onChange={e => setSelectedRound(+e.target.value)}
           >
             <option value={1} className={CARD_BG}>
@@ -200,7 +203,7 @@ const Create = () => {
           <Input
             id="title"
             placeholder="OP Question"
-            className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+            className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]`}
             {...register('Title')}
           />
         </div>
@@ -211,13 +214,13 @@ const Create = () => {
             <Textarea
               id="description"
               defaultValue={description}
-              className={`min-h-[300px] w-full border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+              className={`min-h-[300px] w-full border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]`}
               {...register('Description')}
               onChange={e => setDescription(e.target.value)}
               rows={10}
             ></Textarea>
             <div
-              className={`w-full border ${ACCENT_COLOR_TEXT} border-[${ACCENT_GREEN}]/50 rounded-md p-4 ${CARD_BG} max-h-[300px] overflow-y-auto`}
+              className={`w-full border ${ACCENT_COLOR_TEXT} rounded-md border-[#1ba94c]/50 p-4 ${CARD_BG} max-h-[300px] overflow-y-auto`}
             >
               <h3 className={`mb-2 font-bold uppercase ${ACCENT_COLOR_TEXT}`}>Markdown Preview</h3>
               <Markdown className="markdown text-white/90">{description}</Markdown>
@@ -238,7 +241,7 @@ const Create = () => {
                 <Textarea
                   value={format}
                   placeholder="e.g., A single integer N, followed by N lines..."
-                  className={`w-full border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+                  className={`w-full border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]`}
                   onChange={e => handleInputChange(index, e.target.value, 'format')}
                   rows={2}
                 />
@@ -256,7 +259,7 @@ const Create = () => {
             id="points"
             type="number"
             placeholder="30"
-            className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+            className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]`}
             {...register('Points')}
           />
         </div>
@@ -275,7 +278,7 @@ const Create = () => {
                   <Textarea
                     value={block}
                     placeholder="Scratch block content"
-                    className={`w-full border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+                    className={`w-full border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]`}
                     onChange={e => handleInputChange(index, e.target.value, 'scratch')}
                     rows={2}
                   />
@@ -295,7 +298,7 @@ const Create = () => {
               id="buy_in"
               type="number"
               placeholder="50"
-              className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+              className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]`}
               {...register('BuyIn')}
             />
           </div>
@@ -308,7 +311,7 @@ const Create = () => {
               id="reward"
               type="number"
               placeholder="100"
-              className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+              className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]`}
               {...register('Reward')}
             />
           </div>
@@ -319,7 +322,7 @@ const Create = () => {
           <Textarea
             id="constraints"
             placeholder="1 < x < 10\n1 <= N <= 10^5"
-            className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+            className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]`}
             {...register('Constraints.0')}
             rows={3}
           />
@@ -330,7 +333,7 @@ const Create = () => {
           <Textarea
             id="output_format"
             placeholder="Output a single integer representing the sum."
-            className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+            className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]`}
             {...register('OutputFormat.0')}
             rows={3}
           />
@@ -349,7 +352,7 @@ const Create = () => {
                 <Textarea
                   value={input}
                   placeholder="Input"
-                  className={`w-full border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+                  className={`w-full border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]`}
                   onChange={e => handleInputChange(index, e.target.value, 'input')}
                   rows={3}
                 />
@@ -374,7 +377,7 @@ const Create = () => {
                 <Textarea
                   value={output}
                   placeholder="Output"
-                  className={`w-full border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+                  className={`w-full border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]`}
                   onChange={e => handleInputChange(index, e.target.value, 'output')}
                   rows={3}
                 />
@@ -399,7 +402,7 @@ const Create = () => {
                 <Textarea
                   value={explanation}
                   placeholder="Explanation"
-                  className={`w-full border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+                  className={`w-full border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]`}
                   onChange={e => handleInputChange(index, e.target.value, 'explanation')}
                   rows={3}
                 />
@@ -413,7 +416,7 @@ const Create = () => {
 
         <Button
           type="submit"
-          className={`mt-4 h-10 rounded-md px-6 font-semibold ${BUTTON_TEXT_COLOR} shadow-md transition-all duration-200 ${PRIMARY_BUTTON_BG} ${PRIMARY_BUTTON_HOVER} shadow-[${ACCENT_GREEN}]/50`}
+          className={`mt-4 h-10 rounded-md px-6 font-semibold ${BUTTON_TEXT_COLOR} shadow-md transition-all duration-200 ${PRIMARY_BUTTON_BG} ${PRIMARY_BUTTON_HOVER} shadow-[#1ba94c]/50`}
           disabled={createQuestion.isPending}
         >
           {createQuestion.isPending ? 'Submitting...' : 'Submit Question'}
