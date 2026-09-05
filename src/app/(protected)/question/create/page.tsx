@@ -182,9 +182,6 @@ const Create = () => {
             className={`col-span-3 rounded-md border border-gray-700 ${INPUT_BG} p-2 text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
             onChange={e => setSelectedRound(+e.target.value)}
           >
-            <option value={0} className={CARD_BG}>
-              Round 0
-            </option>
             <option value={1} className={CARD_BG}>
               Round 1
             </option>
