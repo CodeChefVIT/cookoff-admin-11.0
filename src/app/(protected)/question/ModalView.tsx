@@ -86,6 +86,38 @@ const ModalDetails = ({
             </div>
           </div>
 
+          {/* Buy In & Reward (Round 2) */}
+          {(q.BuyIn !== undefined || q.Reward !== undefined) && (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {q.BuyIn !== undefined && (
+                <DetailSection title="Buy In">
+                  <p className={`text-xl font-bold ${ACCENT_COLOR_TEXT}`}>{q.BuyIn}</p>
+                </DetailSection>
+              )}
+              {q.Reward !== undefined && (
+                <DetailSection title="Reward">
+                  <p className={`text-xl font-bold ${ACCENT_COLOR_TEXT}`}>{q.Reward}</p>
+                </DetailSection>
+              )}
+            </div>
+          )}
+
+          {/* Scratch Blocks (Round 1) */}
+          {q.ScratchBlocks?.length ? (
+            <DetailSection title="Scratch Blocks">
+              <div className="flex flex-col gap-2">
+                {q.ScratchBlocks.map((block, index) => (
+                  <pre
+                    key={index}
+                    className="whitespace-pre-wrap break-words rounded-md bg-black/70 p-3 font-mono text-sm text-white/90"
+                  >
+                    {block || 'N/A'}
+                  </pre>
+                ))}
+              </div>
+            </DetailSection>
+          ) : null}
+
           {/* Description */}
           <DetailSection title="Description">
             <div className="break-words text-base text-white/80">{q.Description}</div>

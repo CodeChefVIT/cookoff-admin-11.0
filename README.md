@@ -1,14 +1,13 @@
 <p align="center"><a href="https://www.codechefvit.com" target="_blank"><img src="https://i.ibb.co/4J9LXxS/cclogo.png" width="160" title="CodeChef-VIT" alt="Codechef-VIT"></a></p>
 
-<h2 align="center">Cookoff X Admin</h2>
+<h2 align="center">Cookoff 11.0 Admin</h2>
 <br/>
 
-> Cookoff is CodeChef VIT’s flagship competitive programming event that challenges developers across the country. This repository contains the Admin Portal for Cookoff X — the single interface for managing users, problems, testcases, rounds, judging operations, and event monitoring.
+> Cookoff is CodeChef VIT’s flagship competitive programming event that challenges developers across the country. This repository contains the Admin Portal for Cookoff 11.0 — the single interface for managing users, problems, testcases, rounds, judging operations, and event monitoring.
 
 ## 🌐 Deploy
 
-(Replace with production URL)  
-[https://cookoffx-admin.codechefvit.com](https://cookoffx-admin.codechefvit.com)
+(Production URL)
 
 ## ⚙️ Tech Stack:
 
@@ -49,55 +48,12 @@
 - Observability:
   - Submission analytics page
 
-<p align="center">
-
-#### Login Page
-
-<img width="1440" alt="login" src="/showcase_ss/login.jpeg">
-
-### Portal
-
-#### Dashboard
-
-<img width="1440" alt="dashboard" src="/showcase_ss/dashboard.jpeg">
-
-#### Edit Question Page
-
-<img width="1440" alt="edit-question" src="/showcase_ss/edit_question.jpeg">
-
-#### Question Creation Page
-
-<img width="1440" alt="create-question" src="/showcase_ss/create_question.jpeg">
-
-#### Question Page
-
-<img width="1440" alt="question" src="/showcase_ss/questions.jpeg">
-<img width="1440" alt="testcases" src="/showcase_ss/questions_2.jpeg">
-
-#### Users Page
-
-<img width="1440" alt="users" src="/showcase_ss/users.jpeg">
-
-#### User submissions Page
-
-<img width="1470" height="708" alt="image" src="https://github.com/user-attachments/assets/3f446e65-9e11-4d3a-a9d2-0a7d60891fcb" />
-
-#### Timer Page
-
-<img width="1440" alt="users" src="/showcase_ss/timer.jpeg">
-
-#### Leaderboard Page
-
-<img width="1440" alt="users" src="/showcase_ss/leaderboard.jpeg">
-
-</p>
-
 ## 🏁 Get Started
 
 Clone:
 
 ```bash
-git clone -b main https://github.com/<your-username>/cookoff-admin-X.git
+git clone -b main https://github.com/<your-username>/cookoff-admin-11.0.git
 cd cookoff-admin-X
 ```
 
@@ -149,9 +105,9 @@ Suggested structure:
 ## 📝 Checkout:
 
 - Backend
-  Previous cycle example: https://github.com/CodeChefVIT/cookoff-10.0-be
+  Previous cycle example: https://github.com/CodeChefVIT/cookoff-11.0-be
 - Participant Portal
-  Previous example: https://github.com/CodeChefVIT/cookoff-portal-10.0
+  Previous example: https://github.com/CodeChefVIT/cookoff-portal-11.0
 
 ## 🤝 Contribution Workflow
 
@@ -193,48 +149,33 @@ pnpm build
 - Anomaly detection (suspicious behavior)
 - Email / webhook notifications
 
-## 🚀 Contributors (Alphabetical)
+## Contributors
 
 <table>
-<tr align="center">
-
-<td>
-	<p align="center">
-		<img src="https://avatars.githubusercontent.com/u/56132559?v=4" width="200" height="200" alt="Abhinav Ganeshan" style="border: 2px solid grey; width:170px; height:170px">
-	</p>
-	<p style="font-size:17px; font-weight:600;">Abhinav Ganeshan</p>
-	<p align="center">
-		<a href="https://github.com/Abh1noob">
-			<img src="http://www.iconninja.com/files/241/825/211/round-collaboration-social-github-code-circle-network-icon.svg" width="36" height="36" alt="GitHub"/>
-		</a>
-	</p>
-</td>
-
-<td>
-	<p align="center">
-		<img src="https://avatars.githubusercontent.com/u/67090539?v=4" width="200" height="200" alt="Abhinav Pant" style="border: 2px solid grey; width:170px; height:170px">
-	</p>
-	<p style="font-size:17px; font-weight:600;">Abhinav Pant</p>
-	<p align="center">
-		<a href="https://github.com/abhitrueprogrammer">
-			<img src="http://www.iconninja.com/files/241/825/211/round-collaboration-social-github-code-circle-network-icon.svg" width="36" height="36" alt="GitHub"/>
-		</a>
-	</p>
-</td>
-
-<td>
-	<p align="center">
-		<img src="https://avatars.githubusercontent.com/u/83698727?v=4" width="200" height="200" alt="Advik Gupta" style="border: 2px solid grey; width:170px; height:170px">
-	</p>
-	<p style="font-size:17px; font-weight:600;">Advik Gupta</p>
-	<p align="center">
-		<a href="https://github.com/Advik-Gupta">
-			<img src="http://www.iconninja.com/files/241/825/211/round-collaboration-social-github-code-circle-network-icon.svg" width="36" height="36" alt="GitHub"/>
-		</a>
-	</p>
-</td>
-
-</tr>
+	<tr align="center" style="font-weight:bold">
+		<td>
+		John Doe
+		<p align="center">
+			<img src = "https://i.ibb.co/4J9LXxS/cclogo.png" width="150" height="150" alt="Your Name Here (Insert Your Image Link In Src">
+		</p>
+			<p align="center">
+				<a href = "https://github.com/<GitHub-username>">
+					<img src = "http://www.iconninja.com/files/241/825/211/round-collaboration-social-github-code-circle-network-icon.svg" width="36" height = "36" alt="GitHub"/>
+				</a>
+			</p>
+		</td>
+				<td>
+		John Doe
+		<p align="center">
+			<img src = "https://i.ibb.co/4J9LXxS/cclogo.png" width="150" height="150" alt="Your Name Here (Insert Your Image Link In Src">
+		</p>
+			<p align="center">
+				<a href = "https://github.com/<GitHub-username>">
+					<img src = "http://www.iconninja.com/files/241/825/211/round-collaboration-social-github-code-circle-network-icon.svg" width="36" height = "36" alt="GitHub"/>
+				</a>
+			</p>
+		</td>
+	</tr>
 </table>
 
 ## License
