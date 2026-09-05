@@ -27,6 +27,10 @@ export interface QuestionsDataProps {
   SampleTestInput: string[];
   SampleTestOutput: string[];
   Explanation: string[];
+  Qtype?: string;
+  BuyIn?: number;
+  Reward?: number;
+  ScratchBlocks?: string[];
 }
 
 const columnHelper = createColumnHelper<QuestionsDataProps>();

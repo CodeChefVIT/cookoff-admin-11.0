@@ -216,7 +216,7 @@ const CreateButton = () => {
   }
 
   return (
-    <div className="m-10 mx-auto max-w-5xl space-y-10 text-white">
+    <div className="m-10 mx-auto max-w-none space-y-10 text-white">
       <h1
         className={`flex-grow text-center text-3xl font-extrabold uppercase tracking-widest ${ACCENT_COLOR_TEXT} border-b border-[#1ba94c]/50 pb-2`}
       >
@@ -345,33 +345,31 @@ const CreateButton = () => {
           </div>
         )}
 
-        {/* Buy In (Round 2) */}
+        {/* Buy In & Reward (Round 2) */}
         {selectedRound === 2 && (
-          <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-4">
-            <FormLabel htmlFor="buy_in">Buy In</FormLabel>
-            <Input
-              id="buy_in"
-              type="number"
-              placeholder="50"
-              className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]`}
-              defaultValue={question?.BuyIn}
-              {...register('BuyIn')}
-            />
-          </div>
-        )}
-
-        {/* Reward (Round 2) */}
-        {selectedRound === 2 && (
-          <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-4">
-            <FormLabel htmlFor="reward">Reward</FormLabel>
-            <Input
-              id="reward"
-              type="number"
-              placeholder="100"
-              className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]`}
-              defaultValue={question?.Reward}
-              {...register('Reward')}
-            />
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+            <div className="grid grid-cols-2 items-center gap-4 md:col-span-2">
+              <FormLabel htmlFor="buy_in">Buy In</FormLabel>
+              <Input
+                id="buy_in"
+                type="number"
+                placeholder="50"
+                className={`border border-gray-700 ${INPUT_BG} text-white focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]`}
+                defaultValue={question?.BuyIn}
+                {...register('BuyIn')}
+              />
+            </div>
+            <div className="grid grid-cols-2 items-center gap-4 md:col-span-2">
+              <FormLabel htmlFor="reward">Reward</FormLabel>
+              <Input
+                id="reward"
+                type="number"
+                placeholder="100"
+                className={`border border-gray-700 ${INPUT_BG} text-white focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]`}
+                defaultValue={question?.Reward}
+                {...register('Reward')}
+              />
+            </div>
           </div>
         )}
 
@@ -477,13 +475,15 @@ const CreateButton = () => {
           </div>
         </div>
 
-        <Button
-          className={`h-10 rounded-md px-6 font-semibold ${BUTTON_TEXT_COLOR} shadow-md transition-all duration-200 ${PRIMARY_BUTTON_BG} ${PRIMARY_BUTTON_HOVER} ml-auto flex shadow-[#1ba94c]/50`}
-          type="submit"
-          disabled={createQuestion.isPending}
-        >
-          {createQuestion.isPending ? 'Submitting...' : 'Update Question'}
-        </Button>
+        <div className="flex justify-center">
+          <Button
+            className={`h-10 rounded-md px-6 font-semibold ${BUTTON_TEXT_COLOR} shadow-md transition-all duration-200 ${PRIMARY_BUTTON_BG} ${PRIMARY_BUTTON_HOVER} shadow-[#1ba94c]/50`}
+            type="submit"
+            disabled={createQuestion.isPending}
+          >
+            {createQuestion.isPending ? 'Submitting...' : 'Update Question'}
+          </Button>
+        </div>
       </form>
     </div>
   );
