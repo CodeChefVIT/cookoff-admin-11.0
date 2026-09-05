@@ -68,12 +68,14 @@ const CreateButton = () => {
 
   const router = useRouter();
   const [question, setQuestion] = useState<QuestionResponse>();
+  const [selectedRound, setSelectedRound] = useState<number>(1);
   const [description, setDescription] = useState<string>('teri-mummy');
 
   const [sampleInputs, setSampleInputs] = useState<string[]>(['']);
   const [sampleOutputs, setSampleOutputs] = useState<string[]>(['']);
   const [explanations, setExplanations] = useState<string[]>(['']);
   const [inputFormats, setInputFormats] = useState<string[]>(['']);
+  const [scratchBlocks, setScratchBlocks] = useState<string[]>(['']);
   const queryClient = useQueryClient();
 
   const handleInputChange = (index: number, value: string, type: string) => {
@@ -93,6 +95,10 @@ const CreateButton = () => {
       const newFormats = [...inputFormats];
       newFormats[index] = value;
       setInputFormats(newFormats);
+    } else if (type === 'scratch') {
+      const newBlocks = [...scratchBlocks];
+      newBlocks[index] = value;
+      setScratchBlocks(newBlocks);
     }
   };
 
@@ -105,6 +111,8 @@ const CreateButton = () => {
       setExplanations(explanations.filter((_, i) => i !== index));
     } else if (type === 'format') {
       setInputFormats(inputFormats.filter((_, i) => i !== index));
+    } else if (type === 'scratch') {
+      setScratchBlocks(scratchBlocks.filter((_, i) => i !== index));
     }
   };
 
@@ -123,6 +131,8 @@ const CreateButton = () => {
         setInputFormats(question.InputFormat ?? ['']);
         setSampleOutputs(question.SampleTestOutput ?? ['']);
         setSampleInputs(question.SampleTestInput ?? ['']);
+        setScratchBlocks(question.ScratchBlocks ?? ['']);
+        setSelectedRound(question.Round ?? 1);
 
         setValue('Title', question.Title ?? '');
         setValue('Description', question.Description ?? '');
@@ -130,6 +140,8 @@ const CreateButton = () => {
         setValue('Round', question.Round ?? 1);
         setValue('Constraints.0', (question.Constraints ?? []).join('\n'));
         setValue('OutputFormat.0', (question.OutputFormat ?? []).join('\n'));
+        setValue('BuyIn', question.BuyIn ?? undefined);
+        setValue('Reward', question.Reward ?? undefined);
       } catch (error) {
         console.error('Error fetching question:', error);
       }
@@ -150,6 +162,7 @@ const CreateButton = () => {
       data.SampleTestInput = sampleInputs;
       data.SampleTestOutput = sampleOutputs;
       data.Explanation = explanations;
+      data.ScratchBlocks = scratchBlocks;
       console.log('data', data);
       return toast.promise(UpdateQuestion(data), {
         loading: 'Updating Question',
@@ -185,6 +198,10 @@ const CreateButton = () => {
     setInputFormats([...inputFormats, '']);
   };
 
+  const addScratchBlock = () => {
+    setScratchBlocks([...scratchBlocks, '']);
+  };
+
   // Check if data is still loading (initial state + fetch)
   const isLoading = !question && params.qid;
 
@@ -204,6 +221,28 @@ const CreateButton = () => {
         Edit Question: {question?.Title ?? params.qid}
       </h1>
       <form className="space-y-10" onSubmit={handleSubmit(onSubmit)}>
+        {/* Round */}
+        <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-4">
+          <FormLabel htmlFor="round">Round</FormLabel>
+          <select
+            {...register('Round')}
+            defaultValue={question?.Round}
+            id="round"
+            className={`col-span-3 rounded-md border border-gray-700 ${INPUT_BG} p-2 text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+            onChange={e => setSelectedRound(+e.target.value)}
+          >
+            <option value={1} className={CARD_BG}>
+              Round 1
+            </option>
+            <option value={2} className={CARD_BG}>
+              Round 2
+            </option>
+            <option value={3} className={CARD_BG}>
+              Round 3
+            </option>
+          </select>
+        </div>
+
         {/* Title */}
         <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-4">
           <FormLabel htmlFor="title">Title</FormLabel>
@@ -263,39 +302,76 @@ const CreateButton = () => {
           </div>
         </div>
 
-        {/* Points & Round */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-          <div className="grid grid-cols-2 items-center gap-4 md:col-span-2">
-            <FormLabel htmlFor="points">Points</FormLabel>
+        {/* Points */}
+        <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-4">
+          <FormLabel htmlFor="points">Points</FormLabel>
+          <Input
+            id="points"
+            type="number"
+            placeholder="30"
+            className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+            defaultValue={question?.Points}
+            {...register('Points')}
+          />
+        </div>
+
+        {/* Scratch Blocks (Round 1) */}
+        {selectedRound === 1 && (
+          <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-4">
+            <div className="flex flex-row items-center justify-end gap-2">
+              <FormLabel htmlFor="scratch_blocks">Scratch Blocks</FormLabel>
+              <ActionButton onClick={addScratchBlock}>
+                <Plus size={16} />
+              </ActionButton>
+            </div>
+            <div className="col-span-3 flex w-full flex-col gap-2">
+              {(scratchBlocks ?? []).map((block, index) => (
+                <div key={index} className="flex items-start gap-2">
+                  <Textarea
+                    value={block}
+                    placeholder="Scratch block content"
+                    className={`w-full border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+                    onChange={e => handleInputChange(index, e.target.value, 'scratch')}
+                    rows={2}
+                  />
+                  <ActionButton onClick={() => deleteEntry(index, 'scratch')} isDelete={true}>
+                    <Trash2 size={18} />
+                  </ActionButton>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Buy In (Round 2) */}
+        {selectedRound === 2 && (
+          <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-4">
+            <FormLabel htmlFor="buy_in">Buy In</FormLabel>
             <Input
-              id="points"
+              id="buy_in"
               type="number"
-              placeholder="30"
-              className={`border border-gray-700 ${INPUT_BG} text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
-              defaultValue={question?.Points}
-              {...register('Points')}
+              placeholder="50"
+              className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+              defaultValue={question?.BuyIn}
+              {...register('BuyIn')}
             />
           </div>
-          <div className="grid grid-cols-2 items-center gap-4 md:col-span-2">
-            <FormLabel htmlFor="round">Round</FormLabel>
-            <select
-              {...register('Round')}
-              defaultValue={question?.Round}
-              id="round"
-              className={`rounded-md border border-gray-700 ${INPUT_BG} p-2 text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
-            >
-              <option value={1} className={CARD_BG}>
-                Round 1
-              </option>
-              <option value={2} className={CARD_BG}>
-                Round 2
-              </option>
-              <option value={3} className={CARD_BG}>
-                Round 3
-              </option>
-            </select>
+        )}
+
+        {/* Reward (Round 2) */}
+        {selectedRound === 2 && (
+          <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-4">
+            <FormLabel htmlFor="reward">Reward</FormLabel>
+            <Input
+              id="reward"
+              type="number"
+              placeholder="100"
+              className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+              defaultValue={question?.Reward}
+              {...register('Reward')}
+            />
           </div>
-        </div>
+        )}
 
         {/* Constraints */}
         <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-4">

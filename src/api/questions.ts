@@ -16,6 +16,9 @@ export interface CreateQuestionParams {
   SampleTestInput: string[];
   SampleTestOutput: string[];
   Explanation: string[];
+  ScratchBlocks?: string[];
+  BuyIn?: number;
+  Reward?: number;
 }
 
 export interface UpdateQuestionParams {
@@ -32,6 +35,9 @@ export interface UpdateQuestionParams {
   SampleTestInput: string[];
   SampleTestOutput: string[];
   Explanation: string[];
+  ScratchBlocks?: string[];
+  BuyIn?: number;
+  Reward?: number;
 }
 
 export interface QuestionResponse {
@@ -48,6 +54,9 @@ export interface QuestionResponse {
   SampleTestInput: string[];
   SampleTestOutput: string[];
   Explanation: string[];
+  ScratchBlocks?: string[];
+  BuyIn?: number;
+  Reward?: number;
 }
 
 export interface QuestionsIdApiResponse {

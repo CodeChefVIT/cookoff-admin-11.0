@@ -31,11 +31,13 @@ const Create = () => {
 
   const { register, handleSubmit, reset } = useForm<CreateQuestionParams>();
 
+  const [selectedRound, setSelectedRound] = useState<number>(1);
   const [sampleInputs, setSampleInputs] = useState<string[]>(['']);
   const [sampleOutputs, setSampleOutputs] = useState<string[]>(['']);
   const [explanations, setExplanations] = useState<string[]>(['']);
   const [inputFormats, setInputFormats] = useState<string[]>(['']);
-  const [description, setDescription] = useState<string>('teri-mummy');
+  const [scratchBlocks, setScratchBlocks] = useState<string[]>(['']);
+  const [description, setDescription] = useState<string>('CodeChef is gay');
 
   const createQuestion = useMutation({
     mutationFn: async (data: CreateQuestionParams) => {
@@ -47,6 +49,7 @@ const Create = () => {
       data.SampleTestInput = sampleInputs;
       data.SampleTestOutput = sampleOutputs;
       data.Explanation = explanations;
+      data.ScratchBlocks = scratchBlocks;
 
       return toast.promise(CreateQuestion(data), {
         loading: 'Adding Question',
@@ -86,6 +89,10 @@ const Create = () => {
     setInputFormats([...inputFormats, '']);
   };
 
+  const addScratchBlock = () => {
+    setScratchBlocks([...scratchBlocks, '']);
+  };
+
   const handleInputChange = (index: number, value: string, type: string) => {
     if (type === 'input') {
       const newInputs = [...sampleInputs];
@@ -103,6 +110,10 @@ const Create = () => {
       const newFormats = [...inputFormats];
       newFormats[index] = value;
       setInputFormats(newFormats);
+    } else if (type === 'scratch') {
+      const newBlocks = [...scratchBlocks];
+      newBlocks[index] = value;
+      setScratchBlocks(newBlocks);
     }
   };
 
@@ -115,6 +126,8 @@ const Create = () => {
       setExplanations(explanations.filter((_, i) => i !== index));
     } else if (type === 'format') {
       setInputFormats(inputFormats.filter((_, i) => i !== index));
+    } else if (type === 'scratch') {
+      setScratchBlocks(scratchBlocks.filter((_, i) => i !== index));
     }
   };
 
@@ -160,6 +173,30 @@ const Create = () => {
       </div>
 
       <form className="space-y-10" onSubmit={handleSubmit(onSubmit)}>
+        <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-4">
+          <FormLabel htmlFor="round">Round</FormLabel>
+          <select
+            {...register('Round')}
+            defaultValue={1}
+            id="round"
+            className={`col-span-3 rounded-md border border-gray-700 ${INPUT_BG} p-2 text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+            onChange={e => setSelectedRound(+e.target.value)}
+          >
+            <option value={0} className={CARD_BG}>
+              Round 0
+            </option>
+            <option value={1} className={CARD_BG}>
+              Round 1
+            </option>
+            <option value={2} className={CARD_BG}>
+              Round 2
+            </option>
+            <option value={3} className={CARD_BG}>
+              Round 3
+            </option>
+          </select>
+        </div>
+
         <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-4">
           <FormLabel htmlFor="title">Title</FormLabel>
 
@@ -216,40 +253,69 @@ const Create = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-          <div className="grid grid-cols-2 items-center gap-4 md:col-span-2">
-            <FormLabel htmlFor="points">Points</FormLabel>
+        <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-4">
+          <FormLabel htmlFor="points">Points</FormLabel>
+          <Input
+            id="points"
+            type="number"
+            placeholder="30"
+            className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+            {...register('Points')}
+          />
+        </div>
+
+        {selectedRound === 1 && (
+          <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-4">
+            <div className="flex flex-row items-center justify-end gap-2">
+              <FormLabel htmlFor="scratch_blocks">Scratch Blocks</FormLabel>
+              <ActionButton onClick={addScratchBlock}>
+                <Plus size={16} />
+              </ActionButton>
+            </div>
+            <div className="col-span-3 flex w-full flex-col gap-2">
+              {scratchBlocks.map((block, index) => (
+                <div key={index} className="flex items-start gap-2">
+                  <Textarea
+                    value={block}
+                    placeholder="Scratch block content"
+                    className={`w-full border border-gray-700 ${INPUT_BG} text-white placeholder-gray-500 focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+                    onChange={e => handleInputChange(index, e.target.value, 'scratch')}
+                    rows={2}
+                  />
+                  <ActionButton onClick={() => deleteEntry(index, 'scratch')} isDelete={true}>
+                    <Trash2 size={18} />
+                  </ActionButton>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {selectedRound === 2 && (
+          <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-4">
+            <FormLabel htmlFor="buy_in">Buy In</FormLabel>
             <Input
-              id="points"
+              id="buy_in"
               type="number"
-              placeholder="30"
-              className={`border border-gray-700 ${INPUT_BG} text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
-              {...register('Points')}
+              placeholder="50"
+              className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+              {...register('BuyIn')}
             />
           </div>
-          <div className="grid grid-cols-2 items-center gap-4 md:col-span-2">
-            <FormLabel htmlFor="round">Round</FormLabel>
-            <select
-              {...register('Round')}
-              defaultValue={1}
-              id="round"
-              className={`rounded-md border border-gray-700 ${INPUT_BG} p-2 text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
-            >
-              <option value={0} className={CARD_BG}>
-                Round 0
-              </option>
-              <option value={1} className={CARD_BG}>
-                Round 1
-              </option>
-              <option value={2} className={CARD_BG}>
-                Round 2
-              </option>
-              <option value={3} className={CARD_BG}>
-                Round 3
-              </option>
-            </select>
+        )}
+
+        {selectedRound === 2 && (
+          <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-4">
+            <FormLabel htmlFor="reward">Reward</FormLabel>
+            <Input
+              id="reward"
+              type="number"
+              placeholder="100"
+              className={`col-span-3 border border-gray-700 ${INPUT_BG} text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
+              {...register('Reward')}
+            />
           </div>
-        </div>
+        )}
 
         <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-4">
           <FormLabel htmlFor="constraints">Constraints</FormLabel>
