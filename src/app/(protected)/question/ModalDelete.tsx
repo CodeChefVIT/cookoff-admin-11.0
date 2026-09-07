@@ -1,10 +1,10 @@
 'use client';
 
-import { type ApiError } from 'next/dist/server/api-utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { type Row } from '@tanstack/react-table';
 import toast from 'react-hot-toast';
 
+import { type ApiError } from '@/api/errors';
 import { DeleteQuestion } from '@/api/questions';
 import {
   AlertDialog,
@@ -47,7 +47,7 @@ const ModalDelete = ({
       await queryClient.invalidateQueries({ queryKey: ['questions'] });
     },
     onError: () => {
-      console.log('Error occurred while deleting question');
+      // Toast is already shown via toast.promise; no additional logging needed.
     },
   });
 
