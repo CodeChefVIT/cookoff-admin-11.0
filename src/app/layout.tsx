@@ -8,6 +8,7 @@ import { GeistSans } from 'geist/font/sans';
 import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://portal.codechefvit.com'),
   title: 'Cookoff Admin',
   description: 'Made with ♡ by CodeChef-VIT',
   icons: [{ rel: 'icon', url: '/cc-logo.svg' }],
