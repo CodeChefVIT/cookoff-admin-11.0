@@ -24,19 +24,18 @@ node_modules/next/dist/docs/
 
 ## Project Overview
 
-Next.js 16 (App Router) production-ready starter with:
+Next.js 14 (App Router) starter with:
 
-- **Tailwind CSS v4** — utility-first styling, `@custom-variant dark` for class-based dark mode
+- **Tailwind CSS v3** — utility-first styling, `darkMode: ['class']` for class-based dark mode
 - **Framer Motion** — animation primitives via `LazyMotion + domAnimation`
-- **shadcn/ui** — component primitives via `@base-ui/react`
+- **shadcn/ui** — component primitives via `@radix-ui/react-*`
 - **next-themes** — system/light/dark theme switching
-- **TanStack Query v5** — async server state with SSR prefetch support
+- **TanStack Query v5** — async server state
 - **Axios** — HTTP client with typed error normalisation
 - **Zustand v5** — client state with auto-selector helpers
 - **t3-env + Zod v4** — build-time environment validation
 - **React Hook Form + Zod v4** — type-safe forms via `useZodForm`
-- **Sonner** — themed toast notifications
-- **nuqs** — type-safe URL search params (requires `NuqsAdapter` in layout)
+- **react-hot-toast** — toast notifications (custom wrappers in `src/lib/toast.tsx`)
 - **date-fns v4 + nanoid** — date formatting and ID generation
 - **Vitest + Testing Library** — unit and component tests
 - **ESLint + Prettier** — linting and formatting enforced in CI and pre-commit
@@ -49,7 +48,7 @@ Next.js 16 (App Router) production-ready starter with:
 src/
   env.ts                # t3-env schema — import here, never read process.env directly
   app/                  # Next.js App Router pages and layouts
-    layout.tsx          # Root layout — providers live here
+    layout.tsx          # Root layout — sidebar, toaster, transition wrapper
     page.tsx            # Home page
     motion/             # /motion demo route
   components/
@@ -61,19 +60,20 @@ src/
       index.ts
     ui/                 # shadcn-style primitive components
       button.tsx
-      sonner.tsx        # Themed <Toaster>
+      sonner.tsx        # Sonner shim — react-hot-toast is the primary toaster
   api/                  # HTTP layer
     client.ts           # axios instance `api` + createApiClient()
     errors.ts           # ApiError class, isApiError(), toApiError()
-    request.ts          # request<S>() — typed, optionally schema-validated
     index.ts            # Barrel export
   lib/                  # Cross-cutting utilities (no side effects, tree-shakeable)
     utils.ts            # cn() — clsx + tailwind-merge
     motion.ts           # Shared animation variants and constants
     query.ts            # makeQueryClient(), getQueryClient(), createQueryKeys()
+    toast.tsx           # useToast — custom react-hot-toast helper
   hooks/                # Cross-cutting use* hooks (≥3 consumers or truly shared)
     use-mounted.ts
     use-zod-form.ts     # useZodForm(schema, options) — RHF + zodResolver
+    use-auth.ts         # Admin session verification + logout redirect
   stores/               # Zustand stores
     create-selectors.ts # createSelectors(store) — auto-generates use.* hooks
     ui-store.ts         # useUiStore — sidebar state example (persist)
@@ -84,6 +84,7 @@ src/
   utils/                # Pure utility functions
     date.ts             # formatDate, formatDateTime, formatRelativeDate, timeAgo
     id.ts               # nanoid re-export
+    firebase.utils.ts   # Firebase client initialisation
     index.ts
   constants/            # App-wide constants (no logic)
     api.ts              # API_TIMEOUT_MS, QUERY_STALE_TIME_MS, QUERY_GC_TIME_MS
@@ -101,18 +102,16 @@ Feature-specific hooks, types, and helpers should be colocated with their featur
 
 ## Commands
 
-| Script              | What it does                 |
-| ------------------- | ---------------------------- |
-| `pnpm dev`          | Start dev server (Turbopack) |
-| `pnpm build`        | Production build             |
-| `pnpm start`        | Serve production build       |
-| `pnpm lint`         | ESLint                       |
-| `pnpm lint:fix`     | ESLint with auto-fix         |
-| `pnpm format`       | Prettier write               |
-| `pnpm format:check` | Prettier check (used in CI)  |
-| `pnpm type-check`   | `tsc --noEmit`               |
-| `pnpm test`         | Vitest run (single pass)     |
-| `pnpm test:watch`   | Vitest in watch mode         |
+| Script              | What it does                |
+| ------------------- | --------------------------- |
+| `pnpm dev`          | Start dev server            |
+| `pnpm build`        | Production build            |
+| `pnpm start`        | Serve production build      |
+| `pnpm lint`         | ESLint                      |
+| `pnpm pretty`       | Prettier write              |
+| `pnpm format:check` | Prettier check (used in CI) |
+| `pnpm type-check`   | `tsc --noEmit`              |
+| `pnpm test`         | Vitest run (single pass)    |
 
 ---
 
@@ -165,7 +164,7 @@ Blank lines between each group are auto-inserted — do not add them by hand.
 - `prettier-plugin-tailwindcss` auto-sorts utility classes on format. Never sort by hand.
 - Use `cn()` for conditional or merged class strings.
 - Use `cva()` for components with variant axes.
-- CSS variables for design tokens live in `src/app/globals.css` — do not inline raw colours.
+- CSS variables for design tokens live in `src/styles/globals.css` — do not inline raw colours.
 
 ### Components
 
@@ -205,15 +204,11 @@ Blank lines between each group are auto-inserted — do not add them by hand.
 - Colocate feature form schemas with the feature. Only cross-cutting primitives go in `src/schemas/`.
 - Submit handler: validated data → `api`/`request` call → `toast.success/error`.
 
-### Notifications (Sonner)
+### Notifications (react-hot-toast)
 
-- Import `toast` from `sonner` and call directly. No wrapper needed.
-- `<Toaster />` in `layout.tsx` handles positioning, theming, and stacking automatically.
-
-### URL State (nuqs)
-
-- Use `useQueryState` and `parseAs*` parsers from `nuqs` in client components.
-- `NuqsAdapter` in `layout.tsx` is required — it is already wired.
+- Import `toast` from `react-hot-toast` and call directly. No wrapper needed.
+- For branded toasts with type/icon, use `useToast()` from `@/lib/toast` (`.create('Message', 'success')`).
+- `<Toaster />` lives in `src/app/layout.tsx` and handles positioning automatically.
 
 ### Adding a Provider
 
@@ -225,7 +220,7 @@ Blank lines between each group are auto-inserted — do not add them by hand.
 
 ## Theming
 
-Dark mode is class-based (`@custom-variant dark (&:is(.dark *))`). `next-themes` stamps `.dark` on `<html>` before hydration — no flash.
+Dark mode is class-based (`darkMode: ['class']` in `tailwind.config.ts`). `next-themes` stamps `.dark` on `<html>` before hydration — no flash.
 
 - Default theme: `system` — follows `prefers-color-scheme` automatically.
 - Use `useMounted()` from `src/hooks/use-mounted.ts` to guard any client-only rendering (e.g. reading `useTheme()` before hydration).
