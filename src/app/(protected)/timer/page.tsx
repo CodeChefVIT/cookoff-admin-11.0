@@ -128,16 +128,24 @@ function Timer() {
 
   async function handleStartRound() {
     setIsStarting(true);
-    await startRound();
-    void fetchTimer();
-    setIsStarting(false);
+    try {
+      await startRound();
+      void fetchTimer();
+    } catch {
+      toast.error('Failed to start the round. Please try again.');
+    } finally {
+      setIsStarting(false);
+    }
   }
 
   async function handleResetRound() {
-    await resetRound();
-    void fetchTimer();
-    setIsStarting(false);
-    setDisableSetTime(false);
+    try {
+      await resetRound();
+      void fetchTimer();
+      setDisableSetTime(false);
+    } catch {
+      toast.error('Failed to reset the round. Please try again.');
+    }
   }
 
   async function handleAddTime() {
@@ -152,12 +160,15 @@ function Timer() {
       round_id: selectedRound,
     };
 
-    await updateTime(payload);
-
-    setRemainingSeconds(prev => prev + seconds);
-
-    void fetchTimer();
-    setAddTimeValue({ hours: 0, minutes: 0, seconds: 0 });
+    try {
+      await updateTime(payload);
+      setRemainingSeconds(prev => prev + seconds);
+      void fetchTimer();
+      setAddTimeValue({ hours: 0, minutes: 0, seconds: 0 });
+      toast.success(`Added ${formatTime(seconds)} to round ${selectedRound}`);
+    } catch {
+      toast.error('Failed to add time. Please try again.');
+    }
   }
 
   function formatTime(sec: number): string {

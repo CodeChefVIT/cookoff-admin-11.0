@@ -10,9 +10,7 @@ import BanBtn from './user-ban';
 
 const columnHelper = createColumnHelper<User>();
 
-const ACCENT_GREEN = '#1ba94c';
 const ACCENT_COLOR_TEXT = 'text-[#1ba94c]';
-const CARD_BG = 'bg-[#182319]';
 
 export const UserDataColumn = [
   {
@@ -24,7 +22,7 @@ export const UserDataColumn = [
         }
         onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
-        className={`h-4 w-4 translate-y-[2px] rounded-sm border border-gray-500 bg-transparent data-[state=checked]:${ACCENT_COLOR_TEXT} data-[state=checked]:bg-[${ACCENT_GREEN}] data-[state=indeterminate]:${ACCENT_COLOR_TEXT} data-[state=indeterminate]:bg-[${ACCENT_GREEN}] focus-visible:ring-2 focus-visible:ring-[${ACCENT_GREEN}] focus-visible:ring-offset-1 focus-visible:ring-offset-${CARD_BG.slice(3)} `}
+        className="h-4 w-4 translate-y-[2px] rounded-sm border border-gray-500 bg-transparent focus-visible:ring-2 focus-visible:ring-[#1ba94c] focus-visible:ring-offset-1 focus-visible:ring-offset-[#182319] data-[state=checked]:bg-[#1ba94c] data-[state=indeterminate]:bg-[#1ba94c] data-[state=checked]:text-[#1ba94c] data-[state=indeterminate]:text-[#1ba94c]"
       />
     ),
     cell: ({ row }) => (
