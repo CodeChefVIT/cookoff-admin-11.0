@@ -1,19 +1,21 @@
-import { ApiError } from 'next/dist/server/api-utils';
-import axios, { type AxiosError } from 'axios';
+import axios from 'axios';
+
+import { ApiError, toApiError } from '@/api/errors';
 
 import { toSentenceCase } from './utils';
 
-export function handleAPIError(err: unknown): ApiError {
+export function handleAPIError(err: unknown): ApiError | Error {
+  console.error('[API Error]', err);
+
   if (axios.isAxiosError(err)) {
-    const error = err as AxiosError;
-    const response = error.response;
-    const data = response?.data;
-    if (data) {
-      const msg = (data as { error: string })?.error;
-      if (msg) {
-        return new ApiError(response.status, toSentenceCase(msg));
-      }
+    const data = err.response?.data as { error?: string } | undefined;
+    if (data?.error) {
+      return new ApiError({
+        message: toSentenceCase(data.error),
+        status: err.response?.status,
+      });
     }
   }
-  return new ApiError(500, 'Something went wrong');
+
+  return toApiError(err);
 }

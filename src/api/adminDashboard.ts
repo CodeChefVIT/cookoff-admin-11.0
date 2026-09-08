@@ -17,7 +17,6 @@ export async function RoundEnable(data: RoundParams) {
     const response = await api.post<{ message: string }>('/round/enable', data);
     return response.data;
   } catch (e) {
-    console.log(e);
     throw handleAPIError(e);
   }
 }

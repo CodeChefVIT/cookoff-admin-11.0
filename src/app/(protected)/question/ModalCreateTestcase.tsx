@@ -53,8 +53,6 @@ const CreateTestcaseButton = ({ id, children }: { id: string; children: React.Re
         question_id: id,
       };
 
-      console.log('Payload sent to backend:', payload);
-
       return toast.promise(CreateTestCase(payload), {
         loading: 'Adding Test Case',
         success: 'Test Case added successfully!',

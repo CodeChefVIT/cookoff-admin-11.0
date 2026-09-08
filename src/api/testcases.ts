@@ -41,7 +41,6 @@ export async function CreateTestCase(data: CreateTestCaseParams) {
     const response = await api.post<TestCaseResponse>('/testcase', data);
     return response.data;
   } catch (e) {
-    console.error(e);
     throw handleAPIError(e);
   }
 }
@@ -53,8 +52,7 @@ export async function getTestCasesByQuestion(questionID: string) {
     );
     return response.data.test_cases;
   } catch (e) {
-    console.error(e);
-    return [];
+    throw handleAPIError(e);
   }
 }
 
@@ -65,8 +63,7 @@ export async function getPublicTestCasesByQuestion(questionID: string) {
     );
     return response.data.test_cases;
   } catch (e) {
-    console.error(e);
-    return [];
+    throw handleAPIError(e);
   }
 }
 
@@ -97,7 +94,6 @@ export async function GetAllTestCases() {
     }>('/testcases');
     return response.data.test_cases;
   } catch (e) {
-    console.error(e);
-    return [];
+    throw handleAPIError(e);
   }
 }

@@ -88,7 +88,6 @@ export async function CreateQuestion(data: CreateQuestionParams) {
     const response = await api.post<QuestionResponse>('/question', data);
     return response.data;
   } catch (e) {
-    console.log(e);
     throw handleAPIError(e);
   }
 }

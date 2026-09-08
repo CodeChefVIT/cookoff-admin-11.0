@@ -2,6 +2,8 @@
 
 import { FaGoogle } from 'react-icons/fa';
 
+import { env } from '@/env';
+
 const ACCENT_GREEN = '#1ba94c';
 const HEADER_TEXT_COLOR = `text-[${ACCENT_GREEN}]`;
 const LOGIN_CARD_OUTER_COLOR = 'bg-[#4a4a4a]';
@@ -55,7 +57,7 @@ export default function Login() {
               </h1>
               <button
                 onClick={() => {
-                  window.location.href = `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/auth/google`;
+                  window.location.href = `${env.NEXT_PUBLIC_API_URL}/api/v1/auth/google`;
                 }}
                 type="button"
                 className="flex w-[320px] items-center justify-center gap-3 rounded-md bg-white p-4 text-lg font-semibold text-black transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"

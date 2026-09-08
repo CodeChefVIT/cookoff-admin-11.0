@@ -50,12 +50,10 @@ const Page = () => {
 
   // Handle Previous page click
   const handlePrevPage = () => {
-    setCursorHistory(prev => {
-      const newHistory = [...prev];
-      const prevCursor = newHistory.pop();
-      setCursor(prevCursor); // if undefined, resets to first page
-      return newHistory;
-    });
+    const newHistory = [...cursorHistory];
+    const prevCursor = newHistory.pop();
+    setCursorHistory(newHistory);
+    setCursor(prevCursor); // if undefined, resets to first page
   };
 
   return (

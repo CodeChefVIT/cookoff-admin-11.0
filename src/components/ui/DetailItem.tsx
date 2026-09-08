@@ -21,9 +21,9 @@ const ModalDetailText = ({
           toast.create('Copied to Clipboard ', 'success');
         })
         .catch(error => {
-          toast.create('Error', 'success');
+          toast.create('Failed to copy', 'error');
 
-          console.log(error);
+          console.error(error);
         });
     }
   };
