@@ -122,6 +122,21 @@ export async function getSubmissionsByUser(id: string) {
   }
 }
 
+export interface AdminSessionResponse {
+  status: string;
+  user_id: string;
+  role: string;
+}
+
+export async function getAdminSession() {
+  try {
+    const response = await api.get<AdminSessionResponse>('/admin/session');
+    return response.data;
+  } catch (error) {
+    throw handleAPIError(error);
+  }
+}
+
 export async function getLeaderboard() {
   try {
     const response = await api.get<{

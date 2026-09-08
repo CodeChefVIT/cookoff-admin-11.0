@@ -57,7 +57,7 @@ export default function Login() {
               </h1>
               <button
                 onClick={() => {
-                  window.location.href = `${env.NEXT_PUBLIC_API_URL}/api/v1/auth/google`;
+                  window.location.href = `${env.NEXT_PUBLIC_API_URL}/api/v1/auth/google?portal=admin`;
                 }}
                 type="button"
                 className="flex w-[320px] items-center justify-center gap-3 rounded-md bg-white p-4 text-lg font-semibold text-black transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { getLeaderboard } from '@/api/users';
+import { getAdminSession } from '@/api/users';
 
 // Redirects unauthenticated users to the login page. Verifies the session by
 // calling a protected admin endpoint through the axios client so the
@@ -20,7 +20,7 @@ export function useAuth() {
 
     async function checkAuth() {
       try {
-        await getLeaderboard();
+        await getAdminSession();
         if (active) setIsAuthenticated(true);
       } catch {
         if (active) router.replace('/');
