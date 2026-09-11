@@ -214,7 +214,7 @@ export default function AnalyticsSection() {
                       color: 'white',
                     }}
                     labelStyle={{ color: ACCENT_GREEN, fontWeight: 'bold' }}
-                    formatter={(value: number, name: string) => [value, name]}
+                    formatter={(value, name) => [value ?? 0, name ?? '']}
                   />
                   <Legend iconType="square" wrapperStyle={{ paddingTop: 10, color: '#9ca3af' }} />
                   <Bar dataKey="Submissions" fill={BAR_COLOR} radius={[4, 4, 0, 0]} />

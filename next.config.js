@@ -5,10 +5,7 @@
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ['via.placeholder.com'],
-  },
-  eslint: {
-    ignoreDuringBuilds: false,
+    remotePatterns: [{ protocol: 'https', hostname: 'via.placeholder.com' }],
   },
   typescript: {
     ignoreBuildErrors: false,

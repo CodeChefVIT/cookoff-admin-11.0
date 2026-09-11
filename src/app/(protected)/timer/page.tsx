@@ -27,6 +27,25 @@ interface DurationState {
   seconds: number;
 }
 
+const TimeInput = ({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: number;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder: string;
+}) => (
+  <input
+    type="number"
+    min={0}
+    placeholder={placeholder}
+    className={`w-14 rounded-lg sm:w-16 ${INPUT_BG} border border-transparent p-2 text-center font-mono text-white placeholder-gray-500 focus:border-[${ACCENT_GREEN}] transition`}
+    value={value}
+    onChange={onChange}
+  />
+);
+
 function Timer() {
   const [selectedRound, setSelectedRound] = useState('1');
   const [isRunning, setIsRunning] = useState(false);
@@ -181,25 +200,6 @@ function Timer() {
     const s = (sec % 60).toString().padStart(2, '0');
     return `${h}:${m}:${s}`;
   }
-
-  const TimeInput = ({
-    value,
-    onChange,
-    placeholder,
-  }: {
-    value: number;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    placeholder: string;
-  }) => (
-    <input
-      type="number"
-      min={0}
-      placeholder={placeholder}
-      className={`w-14 rounded-lg sm:w-16 ${INPUT_BG} border border-transparent p-2 text-center font-mono text-white placeholder-gray-500 focus:border-[${ACCENT_GREEN}] transition`}
-      value={value}
-      onChange={onChange}
-    />
-  );
 
   return (
     <div className={`flex min-h-screen flex-col items-center p-4 text-white`}>
