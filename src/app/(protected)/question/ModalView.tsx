@@ -15,6 +15,15 @@ const CARD_BG = 'bg-[#182319]';
 const BORDER_COLOR = `border-[${ACCENT_GREEN}]/40`;
 const SUB_CARD_BG = 'bg-[#253026]';
 
+const DetailSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <div className={`rounded-lg ${SUB_CARD_BG} border border-gray-700 p-4`}>
+    <h3 className={`mb-2 text-lg font-bold uppercase tracking-wider ${ACCENT_COLOR_TEXT}`}>
+      {title}
+    </h3>
+    {children}
+  </div>
+);
+
 const ModalDetails = ({
   row,
   children,
@@ -24,15 +33,6 @@ const ModalDetails = ({
 }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const q = row.original;
-
-  const DetailSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
-    <div className={`rounded-lg ${SUB_CARD_BG} border border-gray-700 p-4`}>
-      <h3 className={`mb-2 text-lg font-bold uppercase tracking-wider ${ACCENT_COLOR_TEXT}`}>
-        {title}
-      </h3>
-      {children}
-    </div>
-  );
 
   return (
     <Dialog open={isModalOpen} onOpenChange={setModalOpen}>

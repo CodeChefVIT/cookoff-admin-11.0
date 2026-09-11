@@ -30,7 +30,7 @@ export async function getTime(): Promise<GetTimeResponse | null> {
   try {
     const response = await api.get<GetTimeResponse>('/getTime');
     return response.data;
-  } catch (e) {
+  } catch {
     return null;
   }
 }
