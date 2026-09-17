@@ -2,80 +2,90 @@ import { handleAPIError } from '@/lib/error';
 
 import api from '.';
 
-export interface GetTimeResponse {
-  server_time: string;
-  round_start_time: string;
-  round_end_time: string;
+/** `dto.TimerResponse` from `cookoff-11.0-be`. Times are RFC3339 and only present while a round has run. */
+export interface TimerState {
+  round: number;
+  is_running: boolean;
+  /** Configured round length in seconds. */
+  duration: number;
+  start_time: string | null;
+  end_time: string | null;
+  /** Seconds left in the running round; 0 when stopped. */
+  time_left: number;
+}
+
+interface Envelope<T> {
+  success: boolean;
+  message: string;
+  data: T;
 }
 
 export interface SetTimeParams {
-  round_id: string;
-  time: string;
+  round: number;
+  duration_seconds: number;
 }
 
 export interface UpdateTimeParams {
-  round_id: string;
-  duration: string;
-}
-
-export interface StartRoundResponse {
-  success: boolean;
-  round_id: number;
+  additional_seconds: number;
 }
 
 /**
- * Fetch the current round and server times.
+ * Fetch the contest timer: current round, whether it is running and the time left.
  */
-export async function getTime(): Promise<GetTimeResponse | null> {
+export async function getTime(): Promise<TimerState | null> {
   try {
-    const response = await api.get<GetTimeResponse>('/getTime');
-    return response.data;
+    const response = await api.get<Envelope<TimerState>>('/getTime');
+    return response.data.data;
   } catch {
     return null;
   }
 }
 
 /**
- * Set the end time for a specific round.
+ * Select the round and set its duration. Stops the timer until the round is started.
  */
-export async function setTime(data: SetTimeParams): Promise<{ success: boolean }> {
+export async function setTime(data: SetTimeParams): Promise<TimerState> {
   try {
-    const response = await api.post<{ success: boolean }>('/admin/setTime', data);
-    return response.data;
+    const response = await api.post<Envelope<TimerState>>('/admin/setTime', data);
+    return response.data.data;
   } catch (e) {
     throw handleAPIError(e);
   }
 }
 
 /**
- * Update the remaining time of the current round.
+ * Add time to the running round (or to the configured duration if it has not started).
  */
-export async function updateTime(data: UpdateTimeParams): Promise<void> {
+export async function updateTime(data: UpdateTimeParams): Promise<TimerState> {
   try {
-    await api.post('/admin/updateTime', data);
+    const response = await api.post<Envelope<TimerState>>('/admin/updateTime', data);
+    return response.data.data;
   } catch (e) {
     throw handleAPIError(e);
   }
 }
 
 /**
- * Reset the round.
+ * Stop the running round and clear its start/end times.
  */
-export async function resetRound(): Promise<void> {
+export async function resetRound(): Promise<TimerState> {
   try {
-    await api.get('/admin/resetRound');
+    const response = await api.post<Envelope<TimerState>>('/admin/resetRound');
+    return response.data.data;
   } catch (e) {
     throw handleAPIError(e);
   }
 }
 
 /**
- * Start a new round. Increments internal round counter and sets start times.
+ * Start the given round now, running for its configured duration.
  */
-export async function startRound(): Promise<StartRoundResponse> {
+export async function startRound(round: number): Promise<TimerState> {
   try {
-    const response = await api.get<StartRoundResponse>('/admin/startRound');
-    return response.data;
+    const response = await api.post<Envelope<TimerState>>('/admin/startRound', null, {
+      params: { round },
+    });
+    return response.data.data;
   } catch (e) {
     throw handleAPIError(e);
   }
