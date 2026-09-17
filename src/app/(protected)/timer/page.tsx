@@ -5,16 +5,7 @@ import { Clock, Settings, Zap } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { FaPlay, FaPlus, FaStopCircle } from 'react-icons/fa';
 
-import {
-  getTime,
-  resetRound,
-  setTime,
-  startRound,
-  updateTime,
-  type GetTimeResponse,
-  type SetTimeParams,
-  type UpdateTimeParams,
-} from '@/api/timer';
+import { getTime, resetRound, setTime, startRound, updateTime, type TimerState } from '@/api/timer';
 
 const ACCENT_GREEN = '#1ba94c';
 const ACCENT_COLOR = 'text-[#1ba94c]';
@@ -50,7 +41,7 @@ function Timer() {
   const [selectedRound, setSelectedRound] = useState('1');
   const [isRunning, setIsRunning] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
-  const [timerData, setTimerData] = useState<GetTimeResponse | null>(null);
+  const [timerData, setTimerData] = useState<TimerState | null>(null);
   const [remainingSeconds, setRemainingSeconds] = useState(0);
   const [disableSetTime, setDisableSetTime] = useState(false);
   const [duration, setDuration] = useState<DurationState>({
@@ -68,12 +59,10 @@ function Timer() {
     const data = await getTime();
     if (data) {
       setTimerData(data);
-      const now = new Date(data.server_time).getTime();
-      const end = new Date(data.round_end_time).getTime();
-      const diff = Math.max(0, Math.floor((end - now) / 1000));
-      setRemainingSeconds(diff);
-      setIsRunning(diff > 0);
-      setDisableSetTime(diff > 0);
+      setSelectedRound(String(data.round));
+      setRemainingSeconds(data.is_running ? data.time_left : 0);
+      setIsRunning(data.is_running);
+      setDisableSetTime(data.is_running);
     } else {
       setTimerData(null);
       setRemainingSeconds(0);
@@ -115,40 +104,28 @@ function Timer() {
   const getDurationInSeconds = (d: DurationState): number =>
     d.hours * 3600 + d.minutes * 60 + d.seconds;
 
-  const formatDurationForAPI = (d: DurationState): string => {
-    const parts: string[] = [];
-    if (d.hours > 0) parts.push(`${d.hours}h`);
-    if (d.minutes > 0) parts.push(`${d.minutes}m`);
-    if (d.seconds > 0) parts.push(`${d.seconds}s`);
-
-    return parts.length > 0 ? parts.join('') : '0s';
-  };
-
   async function handleSetTime() {
     const seconds = getDurationInSeconds(duration);
-
-    const targetDate = new Date(Date.now() + seconds * 1000);
-    const formattedTime = targetDate.toISOString();
-
-    const payload: SetTimeParams = {
-      round_id: selectedRound,
-      time: formattedTime,
-    };
+    if (seconds <= 0) {
+      toast.error('Enter a duration greater than zero.');
+      return;
+    }
 
     setDisableSetTime(true);
-    await setTime(payload)
-      .then(() => {
-        toast.success(`Round ${selectedRound} time set to ${formatTime(seconds)}`);
-      })
-      .catch(() => {
-        toast.error('Failed to set time. Please try again.');
-      });
+    try {
+      await setTime({ round: Number(selectedRound), duration_seconds: seconds });
+      toast.success(`Round ${selectedRound} time set to ${formatTime(seconds)}`);
+      void fetchTimer();
+    } catch {
+      toast.error('Failed to set time. Please try again.');
+      setDisableSetTime(false);
+    }
   }
 
   async function handleStartRound() {
     setIsStarting(true);
     try {
-      await startRound();
+      await startRound(Number(selectedRound));
       void fetchTimer();
     } catch {
       toast.error('Failed to start the round. Please try again.');
@@ -172,15 +149,8 @@ function Timer() {
 
     if (seconds <= 0) return;
 
-    const durationString = formatDurationForAPI(addTimeValue);
-
-    const payload: UpdateTimeParams = {
-      duration: durationString,
-      round_id: selectedRound,
-    };
-
     try {
-      await updateTime(payload);
+      await updateTime({ additional_seconds: seconds });
       setRemainingSeconds(prev => prev + seconds);
       void fetchTimer();
       setAddTimeValue({ hours: 0, minutes: 0, seconds: 0 });
@@ -317,7 +287,8 @@ function Timer() {
           </div>
 
           <div className={`font-mono text-sm italic text-gray-400`}>
-            Round End: {timerData ? new Date(timerData.round_end_time).toLocaleTimeString() : 'N/A'}
+            Round End:{' '}
+            {timerData?.end_time ? new Date(timerData.end_time).toLocaleTimeString() : 'N/A'}
           </div>
         </div>
 
