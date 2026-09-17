@@ -6,6 +6,16 @@ import toast from 'react-hot-toast';
 import { FaPlay, FaPlus, FaStopCircle } from 'react-icons/fa';
 
 import { getTime, resetRound, setTime, startRound, updateTime, type TimerState } from '@/api/timer';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 const ACCENT_GREEN = '#1ba94c';
 const ACCENT_COLOR = 'text-[#1ba94c]';
@@ -41,6 +51,8 @@ function Timer() {
   const [selectedRound, setSelectedRound] = useState('1');
   const [isRunning, setIsRunning] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
+  const [isStopping, setIsStopping] = useState(false);
+  const [confirmStopOpen, setConfirmStopOpen] = useState(false);
   const [timerData, setTimerData] = useState<TimerState | null>(null);
   const [remainingSeconds, setRemainingSeconds] = useState(0);
   const [disableSetTime, setDisableSetTime] = useState(false);
@@ -131,6 +143,21 @@ function Timer() {
       toast.error('Failed to start the round. Please try again.');
     } finally {
       setIsStarting(false);
+    }
+  }
+
+  async function handleStopRound() {
+    setIsStopping(true);
+    try {
+      await resetRound();
+      setDisableSetTime(false);
+      toast.success(`Round ${selectedRound} stopped`);
+      void fetchTimer();
+    } catch {
+      toast.error('Failed to stop the round. Please try again.');
+    } finally {
+      setIsStopping(false);
+      setConfirmStopOpen(false);
     }
   }
 
@@ -260,18 +287,20 @@ function Timer() {
             </div>
 
             <button
-              disabled={isStarting || isRunning}
+              disabled={isStarting || isStopping}
               className={`rounded-lg px-6 py-3 font-bold uppercase text-white shadow-md transition-all duration-200 ${
-                isStarting
+                isStarting || isStopping
                   ? 'cursor-not-allowed bg-gray-500'
                   : isRunning
-                    ? 'cursor-not-allowed bg-gray-500' /* New: Use gray and disable hover effects */
+                    ? 'bg-red-600 hover:scale-105 hover:bg-red-700'
                     : `bg-[${ACCENT_GREEN}] hover:scale-105 hover:bg-[#15803d]`
               }`}
-              onClick={handleStartRound}
+              onClick={isRunning ? () => setConfirmStopOpen(true) : handleStartRound}
             >
               {isStarting ? (
                 'Starting...'
+              ) : isStopping ? (
+                'Stopping...'
               ) : isRunning ? (
                 <div className="flex items-center gap-2">
                   <FaStopCircle size={24} />
@@ -346,6 +375,37 @@ function Timer() {
           </div>
         </div>
       </div>
+
+      <AlertDialog open={confirmStopOpen} onOpenChange={setConfirmStopOpen}>
+        <AlertDialogContent
+          className={`rounded-xl border border-red-700/50 ${CARD_BG} p-6 text-white shadow-2xl`}
+        >
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-xl font-bold uppercase tracking-wider text-red-500">
+              Stop Round {selectedRound}?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="mt-2 text-gray-400">
+              This ends the round for every participant right now. The remaining time is discarded
+              and can&apos;t be resumed; starting again begins a fresh round of the set duration.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="pt-4">
+            <AlertDialogCancel className="h-10 rounded-md border border-gray-600 bg-transparent px-4 text-white transition-colors hover:bg-gray-800">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={event => {
+                event.preventDefault();
+                void handleStopRound();
+              }}
+              disabled={isStopping}
+              className="h-10 rounded-md bg-red-600 px-4 font-semibold text-white shadow-md shadow-red-700/50 transition-colors duration-200 hover:bg-red-500"
+            >
+              {isStopping ? 'Stopping...' : 'Stop Round'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
