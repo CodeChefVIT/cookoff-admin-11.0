@@ -94,7 +94,7 @@ const Page = () => {
 
           <span className="text-sm tabular-nums text-gray-500">
             Page <span className="font-medium text-white">{pageNumber}</span>
-            {data?.next_cursor && <span className="text-gray-500"> · more pages</span>}
+            {data?.next_cursor && <span className="text-gray-500"> &bull; more pages</span>}
           </span>
 
           <button
