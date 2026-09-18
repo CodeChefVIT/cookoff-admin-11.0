@@ -129,7 +129,6 @@ export function normalizeLeaderboardUser(
   };
 }
 
-export async function getUsers(limit?: number, cursor?: string) {
 export function normalizeUser(raw: RawBackendUser | User): User {
   if ('ID' in raw && raw.ID) {
     return raw as User;
@@ -186,9 +185,9 @@ export async function getUsers(limit?: number, cursor?: string): Promise<GetUser
 
 export async function banUser(id: string) {
   try {
-    const response = await api.post<ApiResponse<RawBackendUser> | { status: string; message: string }>(
-      `/admin/users/${id}/ban`
-    );
+    const response = await api.post<
+      ApiResponse<RawBackendUser> | { status: string; message: string }
+    >(`/admin/users/${id}/ban`);
     return {
       status: 'success',
       message: response.data?.message ?? 'User banned successfully',
@@ -200,9 +199,9 @@ export async function banUser(id: string) {
 
 export async function unbanUser(id: string) {
   try {
-    const response = await api.post<ApiResponse<RawBackendUser> | { status: string; message: string }>(
-      `/admin/users/${id}/unban`
-    );
+    const response = await api.post<
+      ApiResponse<RawBackendUser> | { status: string; message: string }
+    >(`/admin/users/${id}/unban`);
     return {
       status: 'success',
       message: response.data?.message ?? 'User unbanned successfully',
@@ -214,10 +213,9 @@ export async function unbanUser(id: string) {
 
 export async function upgradeUserToRound(id: string, payload?: UpgradeUserPayload) {
   try {
-    const response = await api.post<ApiResponse<RawBackendUser> | { status: string; message: string }>(
-      `/admin/users/${id}/upgrade`,
-      payload ?? {}
-    );
+    const response = await api.post<
+      ApiResponse<RawBackendUser> | { status: string; message: string }
+    >(`/admin/users/${id}/upgrade`, payload ?? {});
     return {
       status: 'success',
       message: response.data?.message ?? 'User upgraded successfully',
@@ -250,9 +248,9 @@ export interface AdminSessionResponse {
 
 export async function getAdminSession() {
   try {
-    const response = await api.get<ApiResponse<{ user_id: string; role: string }> | AdminSessionResponse>(
-      '/admin/session'
-    );
+    const response = await api.get<
+      ApiResponse<{ user_id: string; role: string }> | AdminSessionResponse
+    >('/admin/session');
     if (response.data && 'data' in response.data && response.data.data) {
       return {
         status: 'success',
@@ -276,7 +274,11 @@ export async function getLeaderboard(): Promise<LeaderboardUser[]> {
       return response.data.data.map(normalizeLeaderboardUser);
     }
 
-    if (response.data && 'leaderboard' in response.data && Array.isArray(response.data.leaderboard)) {
+    if (
+      response.data &&
+      'leaderboard' in response.data &&
+      Array.isArray(response.data.leaderboard)
+    ) {
       return response.data.leaderboard.map(normalizeLeaderboardUser);
     }
 
