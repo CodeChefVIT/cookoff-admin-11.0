@@ -1,6 +1,7 @@
 import { handleAPIError } from '@/lib/error';
 
 import api from '.';
+import { getUsers } from './users';
 
 export interface User {
   ID: string;
@@ -56,10 +57,62 @@ export type UserWithSubmissions = {
   submissions: SubmissionWithResultsAndTestcases[];
 };
 
+// The backend returns a flat snake_case submission list (no user, no
+// per-testcase results) inside a {success, message, data} envelope, so the
+// user is looked up from the users list.
+interface RawUserSubmission {
+  id: string;
+  question_id: string;
+  question_title: string;
+  question_round: number;
+  testcases_passed: number;
+  testcases_failed: number;
+  runtime: number;
+  memory: number;
+  language_id: number;
+  status: string;
+  description: string;
+  source_code: string;
+  submission_time: string;
+}
+
 export async function getUserSubmissions(userID: string): Promise<UserWithSubmissions> {
   try {
-    const response = await api.get<UserWithSubmissions>(`/admin/users/${userID}/submissions`);
-    return response.data;
+    const [response, users] = await Promise.all([
+      api.get<{ data: RawUserSubmission[] | null }>(`/admin/users/${userID}/submissions`),
+      getUsers(),
+    ]);
+    const found = users.users.find(u => u.ID === userID);
+    const user: User = found
+      ? { ...found, Score: found.Score ?? 0 }
+      : {
+          ID: userID,
+          Email: '',
+          RegNo: '',
+          Role: '',
+          RoundQualified: 0,
+          Score: 0,
+          Name: 'Unknown',
+          IsBanned: false,
+        };
+    const submissions = (response.data.data ?? []).map(s => ({
+      submission: {
+        ID: s.id,
+        QuestionID: s.question_id,
+        TestcasesPassed: s.testcases_passed,
+        TestcasesFailed: s.testcases_failed,
+        Runtime: s.runtime,
+        Memory: s.memory,
+        SubmissionTime: s.submission_time,
+        SourceCode: s.source_code,
+        LanguageID: s.language_id,
+        Description: s.description,
+        UserID: userID,
+        Status: s.status,
+      },
+      results: [],
+    }));
+    return { user, submissions };
   } catch (error) {
     throw handleAPIError(error);
   }

@@ -22,7 +22,7 @@ const EditQuestion = () => {
     const fetchQuestion = async () => {
       try {
         const q = await GetQuestionById(params.qid);
-        setQuestion(q.question[0]);
+        setQuestion(q);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load question');
       }
