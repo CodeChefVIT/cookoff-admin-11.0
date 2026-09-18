@@ -17,6 +17,7 @@ export interface User {
 export interface Submission {
   ID: string;
   QuestionID: string;
+  QuestionTitle?: string;
   TestcasesPassed?: number;
   TestcasesFailed?: number;
   Runtime?: number;
@@ -99,6 +100,7 @@ export async function getUserSubmissions(userID: string): Promise<UserWithSubmis
       submission: {
         ID: s.id,
         QuestionID: s.question_id,
+        QuestionTitle: s.question_title,
         TestcasesPassed: s.testcases_passed,
         TestcasesFailed: s.testcases_failed,
         Runtime: s.runtime,
