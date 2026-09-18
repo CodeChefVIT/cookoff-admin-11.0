@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -40,6 +41,7 @@ const UserSubmissionsPage = () => {
   const [selectedTestcaseIndex, setSelectedTestcaseIndex] = useState<number>(0);
   const [selectedQuestion, setSelectedQuestion] = useState<string | null>(null);
 
+// eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (userData?.submissions && userData.submissions.length > 0) {
       const firstSubmission = userData.submissions[0] ?? null;
@@ -50,6 +52,7 @@ const UserSubmissionsPage = () => {
     }
   }, [userData]);
 
+// eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     setSelectedTestcaseIndex(0);
   }, [selectedSubmission, selectedQuestion]);

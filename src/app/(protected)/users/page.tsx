@@ -22,7 +22,7 @@ const Page = () => {
   // Fetch users with React Query
   const { data, error, isLoading, isFetching, refetch } = useQuery<GetUsersResponse, Error>({
     queryKey: ['users', cursor],
-    queryFn: () => getUsers(PAGE_LIMIT, cursor),
+    queryFn: () => { return getUsers(PAGE_LIMIT, cursor); },
     placeholderData: keepPreviousData,
   });
 
