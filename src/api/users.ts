@@ -12,15 +12,35 @@ export interface User {
   IsBanned: boolean;
 }
 
+export interface RawLeaderboardEntry {
+  rank: number;
+  id: string;
+  name: string;
+  email: string;
+  reg_no: string;
+  score: number;
+  round_qualified: number;
+  total_runtime?: number;
+  last_submission_time?: string | null;
+  total_submissions?: number;
+  solved_count?: number;
+  is_banned?: boolean;
+}
+
 export interface LeaderboardUser {
+  Rank?: number;
   ID: string;
   Email: string;
   RegNo: string;
-  Role: string;
+  Role?: string;
   RoundQualified: number;
   Name: string;
   IsBanned: boolean;
-  Score?: number;
+  Score: number;
+  TotalRuntime?: number;
+  LastSubmissionTime?: string | null;
+  TotalSubmissions?: number;
+  SolvedCount?: number;
 }
 
 export interface Submission {
@@ -58,6 +78,29 @@ export interface GetUsersResponse {
   status: string;
   users: User[];
   next_cursor?: string;
+}
+
+export function normalizeLeaderboardUser(
+  raw: RawLeaderboardEntry | LeaderboardUser
+): LeaderboardUser {
+  if ('ID' in raw && raw.ID && 'Score' in raw) {
+    return raw as LeaderboardUser;
+  }
+  const r = raw as RawLeaderboardEntry;
+  return {
+    Rank: r.rank,
+    ID: r.id,
+    Name: r.name,
+    Email: r.email,
+    RegNo: r.reg_no,
+    Score: r.score ?? 0,
+    RoundQualified: r.round_qualified ?? 1,
+    TotalRuntime: r.total_runtime,
+    LastSubmissionTime: r.last_submission_time,
+    TotalSubmissions: r.total_submissions,
+    SolvedCount: r.solved_count,
+    IsBanned: r.is_banned ?? false,
+  };
 }
 
 export async function getUsers(limit?: number, cursor?: string) {
