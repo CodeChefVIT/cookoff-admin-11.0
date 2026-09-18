@@ -106,8 +106,8 @@ export async function GetQuestionById(id: string) {
 
 export async function UpdateQuestion(data: UpdateQuestionParams) {
   try {
-    const { ID, ...body } = data;
-    const response = await api.put<{ data: QuestionResponse }>(`/question/${ID}`, toSnake(body));
+    const { ID } = data;
+    const response = await api.put<{ data: QuestionResponse }>(`/question/${ID}`, toSnake(data));
     return fromSnakeAs<QuestionResponse>(response.data.data);
   } catch (e) {
     throw handleAPIError(e);
