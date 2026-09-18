@@ -61,10 +61,10 @@ export function DataTableToolbar<TData>({
       reset();
       setIsOpen(false);
       table.resetRowSelection();
-      toast.success('Users successfully promoted!');
+      toast.success('Rounds updated');
     },
     onError: (err: ApiError) => {
-      const errorMessage = (err as { message?: string })?.message ?? 'Failed to promote users.';
+      const errorMessage = (err as { message?: string })?.message ?? 'Failed to update rounds.';
       toast.error(errorMessage);
     },
   });
@@ -84,15 +84,16 @@ export function DataTableToolbar<TData>({
       };
       toast
         .promise(promoteUsers.mutateAsync(payload), {
-          loading: 'Promoting Users...',
+          loading: 'Updating rounds...',
           success: 'Success!',
-          error: (err: ApiError) => (err as { message?: string })?.message ?? 'Promotion failed.',
+          error: (err: ApiError) =>
+            (err as { message?: string })?.message ?? 'Round update failed.',
         })
         .catch(error => {
-          console.error('Unexpected error during promotion:', error);
+          console.error('Unexpected error while updating rounds:', error);
         });
     } else {
-      toast.error('No users selected for promotion.');
+      toast.error('No users selected.');
     }
   };
 
@@ -161,7 +162,7 @@ export function DataTableToolbar<TData>({
                 }`}
               >
                 <UserPlus className="mr-2 h-4 w-4" />
-                Promote ({table.getSelectedRowModel().rows.length})
+                Change Round ({table.getSelectedRowModel().rows.length})
               </Button>
             </DialogTrigger>
 
@@ -170,11 +171,11 @@ export function DataTableToolbar<TData>({
             >
               <DialogHeader>
                 <DialogTitle className="text-xl font-bold uppercase tracking-wider text-white">
-                  Confirm User Promotion
+                  Change User Round
                 </DialogTitle>
                 <DialogDescription className="mt-2 text-gray-400">
-                  You are promoting {table.getSelectedRowModel().rows.length} user(s). Select the
-                  target round below.
+                  Move {table.getSelectedRowModel().rows.length} user(s) to the round below. Picking
+                  a lower round demotes them; Round 0 removes them from the contest.
                 </DialogDescription>
               </DialogHeader>
 
@@ -188,6 +189,9 @@ export function DataTableToolbar<TData>({
                   id="round"
                   className={`flex justify-center rounded-md border border-gray-700 ${INPUT_BG} p-2 text-white focus:border-[${ACCENT_GREEN}] focus:ring-1 focus:ring-[${ACCENT_GREEN}]`}
                 >
+                  <option value="0" className={CARD_BG}>
+                    Round 0 (not qualified)
+                  </option>
                   <option value="1" className={CARD_BG}>
                     Round 1
                   </option>
@@ -214,7 +218,7 @@ export function DataTableToolbar<TData>({
                   disabled={promoteUsers.isPending}
                   className={`h-10 rounded-md px-4 font-semibold text-black transition-all duration-200 ${PRIMARY_BUTTON_BG} ${PRIMARY_BUTTON_HOVER}`}
                 >
-                  {promoteUsers.isPending ? 'Processing...' : 'Continue Promotion'}
+                  {promoteUsers.isPending ? 'Processing...' : 'Update Round'}
                 </Button>
               </div>
             </DialogContent>

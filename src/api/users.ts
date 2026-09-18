@@ -291,7 +291,9 @@ export async function getLeaderboard(): Promise<LeaderboardUser[]> {
 export async function SetUserRound({ user_ids, round }: SetUserRoundProps) {
   try {
     const results = await Promise.all(
-      user_ids.map(id => upgradeUserToRound(id, round ? { round_qualified: round } : undefined))
+      user_ids.map(id =>
+        upgradeUserToRound(id, round !== undefined ? { round_qualified: round } : undefined)
+      )
     );
     return results;
   } catch (error) {
