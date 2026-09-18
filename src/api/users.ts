@@ -80,6 +80,12 @@ export interface GetUsersResponse {
   next_cursor?: string;
 }
 
+export interface ApiResponse<T> {
+  success?: boolean;
+  message?: string;
+  data: T;
+}
+
 export function normalizeLeaderboardUser(
   raw: RawLeaderboardEntry | LeaderboardUser
 ): LeaderboardUser {
@@ -180,13 +186,21 @@ export async function getAdminSession() {
   }
 }
 
-export async function getLeaderboard() {
+export async function getLeaderboard(): Promise<LeaderboardUser[]> {
   try {
-    const response = await api.get<{
-      status: string;
-      leaderboard: LeaderboardUser[];
-    }>('/admin/leaderboard');
-    return response.data.leaderboard;
+    const response = await api.get<
+      ApiResponse<RawLeaderboardEntry[]> | { status: string; leaderboard: LeaderboardUser[] }
+    >('/admin/leaderboard');
+
+    if (response.data && 'data' in response.data && Array.isArray(response.data.data)) {
+      return response.data.data.map(normalizeLeaderboardUser);
+    }
+
+    if (response.data && 'leaderboard' in response.data && Array.isArray(response.data.leaderboard)) {
+      return response.data.leaderboard.map(normalizeLeaderboardUser);
+    }
+
+    return [];
   } catch (error) {
     throw handleAPIError(error);
   }
