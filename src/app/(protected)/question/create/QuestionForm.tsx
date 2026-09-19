@@ -108,7 +108,7 @@ export function QuestionForm({
 
   // Populate form defaults in edit mode
   // eslint-disable-next-line react-hooks/set-state-in-effect
-// eslint-disable-next-line react-hooks/set-state-in-effect
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!initialValues) return;
     setDescription(initialValues.description ?? '');

@@ -318,7 +318,8 @@ export async function upgradeAllUsers(payload?: UpgradeAllUsersPayload | number)
     }
 
     const response = await api.post<
-      ApiResponse<{ round_qualified: number; users_upgraded: number }> | { status: string; message: string; data?: unknown }
+      | ApiResponse<{ round_qualified: number; users_upgraded: number }>
+      | { status: string; message: string; data?: unknown }
     >('/admin/users/upgrade-all', body);
     return {
       status: 'success',

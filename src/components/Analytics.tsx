@@ -1,14 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import {
-  Activity,
-  CheckCircle2,
-  Code,
-  Send,
-  Users,
-  Zap,
-} from 'lucide-react';
+import { Activity, CheckCircle2, Code, Send, Users, Zap } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
   Bar,
@@ -32,15 +25,7 @@ const PRIMARY_BG = 'bg-[#0f1710]';
 const CHART_GRID_COLOR = '#2e3830';
 const ACCENT_COLOR = 'text-[#1ba94c]';
 
-const PIE_COLORS = [
-  '#10b981',
-  '#3b82f6',
-  '#f59e0b',
-  '#8b5cf6',
-  '#ec4899',
-  '#06b6d4',
-  '#84cc16',
-];
+const PIE_COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
 
 interface StatCardProps {
   title: string;
@@ -50,13 +35,7 @@ interface StatCardProps {
   gradient: string;
 }
 
-const StatCard: React.FC<StatCardProps> = ({
-  title,
-  value,
-  subtitle,
-  icon: Icon,
-  gradient,
-}) => (
+const StatCard: React.FC<StatCardProps> = ({ title, value, subtitle, icon: Icon, gradient }) => (
   <div
     className={`flex transform flex-col justify-between rounded-xl border border-white/5 bg-gradient-to-br ${gradient} p-5 shadow-lg transition duration-200 hover:scale-[1.02]`}
   >
@@ -65,8 +44,8 @@ const StatCard: React.FC<StatCardProps> = ({
       <Icon className="h-5 w-5 text-white/90" />
     </div>
     <div className="mt-3">
-      <p className="text-3xl font-extrabold text-white tracking-tight">{value}</p>
-      {subtitle && <p className="mt-1 text-xs text-white/70 font-medium">{subtitle}</p>}
+      <p className="text-3xl font-extrabold tracking-tight text-white">{value}</p>
+      {subtitle && <p className="mt-1 text-xs font-medium text-white/70">{subtitle}</p>}
     </div>
   </div>
 );
@@ -99,7 +78,9 @@ export function AnalyticsSection() {
 
   if (loading) {
     return (
-      <div className={`flex h-48 items-center justify-center text-base text-gray-400 ${PRIMARY_BG}`}>
+      <div
+        className={`flex h-48 items-center justify-center text-base text-gray-400 ${PRIMARY_BG}`}
+      >
         Loading analytics dashboard...
       </div>
     );
@@ -199,16 +180,11 @@ export function AnalyticsSection() {
                     innerRadius={50}
                     paddingAngle={3}
                     labelLine={false}
-                    label={({ name, percent }) =>
-                      `${name}: ${(Number(percent) * 100).toFixed(0)}%`
-                    }
+                    label={({ name, percent }) => `${name}: ${(Number(percent) * 100).toFixed(0)}%`}
                     stroke="none"
                   >
                     {languageData.map((_, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={PIE_COLORS[index % PIE_COLORS.length]}
-                      />
+                      <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip
@@ -247,16 +223,9 @@ export function AnalyticsSection() {
           </div>
           <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={outcomesData}
-                margin={{ top: 10, right: 10, left: -10, bottom: 5 }}
-              >
+              <BarChart data={outcomesData} margin={{ top: 10, right: 10, left: -10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID_COLOR} />
-                <XAxis
-                  dataKey="name"
-                  stroke="#9ca3af"
-                  tick={{ fill: '#9ca3af', fontSize: 12 }}
-                />
+                <XAxis dataKey="name" stroke="#9ca3af" tick={{ fill: '#9ca3af', fontSize: 12 }} />
                 <YAxis stroke="#9ca3af" tick={{ fill: '#9ca3af', fontSize: 12 }} />
                 <Tooltip
                   contentStyle={{
