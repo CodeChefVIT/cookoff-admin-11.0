@@ -13,10 +13,7 @@ const CARD_BG = 'bg-[#182319]';
 function Leaderboard() {
   const { data, error, isLoading } = useQuery<LeaderboardUser[], Error>({
     queryKey: ['leaderboard'],
-    queryFn: async () => {
-      const res = await getLeaderboard();
-      return res;
-    },
+    queryFn: () => getLeaderboard(),
   });
 
   const handleCopy = (id: string) => {
@@ -46,15 +43,16 @@ function Leaderboard() {
     }
   };
 
-  const orderedTopThree = [];
+  const orderedTopThree: { user: LeaderboardUser; rank: number }[] = [];
   if (topThree[1]) orderedTopThree.push({ user: topThree[1], rank: 2 });
   if (topThree[0]) orderedTopThree.push({ user: topThree[0], rank: 1 });
   if (topThree[2]) orderedTopThree.push({ user: topThree[2], rank: 3 });
 
   return (
-    <div className={`min-h-screen p-5 text-white`}>
+    <div className="min-h-screen p-5 text-white">
       <h1
-        className={`mb-8 pb-2 text-center text-3xl font-extrabold uppercase tracking-widest sm:text-4xl ${ACCENT_COLOR} border-b border-[${ACCENT_GREEN}]/50`}
+        className={`mb-8 border-b pb-2 text-center text-3xl font-extrabold uppercase tracking-widest sm:text-4xl ${ACCENT_COLOR}`}
+        style={{ borderColor: `${ACCENT_GREEN}80` }}
       >
         Leaderboard
       </h1>
@@ -72,52 +70,61 @@ function Leaderboard() {
 
       {!isLoading && !error && (
         <div className="mx-auto max-w-4xl">
-          <div className="mb-12 flex items-end justify-center gap-2 sm:gap-4">
-            {orderedTopThree.map(({ user, rank }) => (
-              <div
-                key={user?.ID}
-                className={`flex transform cursor-pointer flex-col justify-between rounded-lg p-2 transition-transform duration-300 hover:scale-[1.03] bg-[${ACCENT_GREEN}]/10 shadow-lg backdrop-blur-sm border-[${ACCENT_GREEN}]/50 w-full max-w-[100px] sm:max-w-[150px] ${getRankClasses(rank)} `}
-                style={{
-                  minHeight: '180px',
-                  flexGrow: rank === 1 ? 1.2 : rank === 2 ? 1.1 : 1,
-                }}
-                onClick={() => handleCopy(user?.ID ?? '')}
-              >
-                <div className="flex flex-col items-center p-1">
-                  <Trophy
-                    className={`mb-1 h-5 w-5 sm:h-8 sm:w-8 ${
-                      rank === 1
-                        ? 'fill-yellow-500'
-                        : rank === 2
-                          ? 'fill-gray-400'
-                          : 'fill-yellow-700'
-                    }`}
-                  />
-                  <p className="mb-0 text-xl font-black sm:text-3xl">{`#${rank}`}</p>
-                  <p className="w-full truncate text-center text-xs font-semibold sm:text-sm">
-                    {user?.Name ?? 'Unknown'}
-                  </p>
-                  <p
-                    className={`mt-1 text-lg font-bold sm:text-xl ${
-                      rank === 1 ? ACCENT_COLOR : ''
-                    }`}
-                  >
-                    {user?.Score ?? 0}
-                  </p>
-                  <Copy className="mt-1 h-3 w-3 opacity-30 transition-opacity hover:opacity-100" />
-                </div>
-
+          {orderedTopThree.length > 0 && (
+            <div className="mb-12 flex items-end justify-center gap-2 sm:gap-4">
+              {orderedTopThree.map(({ user, rank }) => (
                 <div
-                  className={`mt-2 rounded-b-lg p-1 text-center text-xs font-bold sm:text-sm bg-[${ACCENT_GREEN}]/30 border-t border-[${ACCENT_GREEN}]/50 `}
+                  key={user?.ID}
+                  className={`flex w-full max-w-[100px] transform cursor-pointer flex-col justify-between rounded-lg border p-2 shadow-lg backdrop-blur-sm transition-transform duration-300 hover:scale-[1.03] sm:max-w-[150px] ${getRankClasses(rank)}`}
+                  style={{
+                    backgroundColor: `${ACCENT_GREEN}1A`,
+                    borderColor: `${ACCENT_GREEN}80`,
+                    minHeight: '180px',
+                    flexGrow: rank === 1 ? 1.2 : rank === 2 ? 1.1 : 1,
+                  }}
+                  onClick={() => handleCopy(user?.ID ?? '')}
                 >
-                  RANK {rank}
+                  <div className="flex flex-col items-center p-1">
+                    <Trophy
+                      className={`mb-1 h-5 w-5 sm:h-8 sm:w-8 ${
+                        rank === 1
+                          ? 'fill-yellow-500'
+                          : rank === 2
+                            ? 'fill-gray-400'
+                            : 'fill-yellow-700'
+                      }`}
+                    />
+                    <p className="mb-0 text-xl font-black sm:text-3xl">{`#${rank}`}</p>
+                    <p className="w-full truncate text-center text-xs font-semibold sm:text-sm">
+                      {user?.Name ?? 'Unknown'}
+                    </p>
+                    <p
+                      className={`mt-1 text-lg font-bold sm:text-xl ${
+                        rank === 1 ? ACCENT_COLOR : ''
+                      }`}
+                    >
+                      {user?.Score ?? 0}
+                    </p>
+                    <Copy className="mt-1 h-3 w-3 opacity-30 transition-opacity hover:opacity-100" />
+                  </div>
+
+                  <div
+                    className="mt-2 rounded-b-lg border-t p-1 text-center text-xs font-bold sm:text-sm"
+                    style={{
+                      backgroundColor: `${ACCENT_GREEN}4D`,
+                      borderColor: `${ACCENT_GREEN}80`,
+                    }}
+                  >
+                    RANK {rank}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           <div
-            className={`rounded-xl border border-[${ACCENT_GREEN}]/30 ${CARD_BG} p-4 shadow-inner sm:p-6`}
+            className={`rounded-xl border ${CARD_BG} p-4 shadow-inner sm:p-6`}
+            style={{ borderColor: `${ACCENT_GREEN}4D` }}
           >
             <h2 className={`mb-4 text-xl font-bold uppercase tracking-wider ${ACCENT_COLOR}`}>
               The Rest of the Field
@@ -129,7 +136,7 @@ function Leaderboard() {
                   return (
                     <div
                       key={user?.ID}
-                      className={`flex cursor-pointer items-center justify-between rounded-md p-3 transition-colors duration-200 hover:bg-[${ACCENT_GREEN}]/10`}
+                      className="flex cursor-pointer items-center justify-between rounded-md p-3 transition-colors duration-200 hover:bg-[#1ba94c]/10"
                       onClick={() => handleCopy(user?.ID ?? '')}
                     >
                       <div className="flex items-center space-x-4">

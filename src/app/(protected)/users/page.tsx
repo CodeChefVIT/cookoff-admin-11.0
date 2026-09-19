@@ -22,7 +22,7 @@ const Page = () => {
   // Fetch users with React Query
   const { data, error, isLoading, isFetching, refetch } = useQuery<GetUsersResponse, Error>({
     queryKey: ['users', cursor],
-    queryFn: () => getUsers(PAGE_LIMIT, cursor),
+    queryFn: () => { return getUsers(PAGE_LIMIT, cursor); },
     placeholderData: keepPreviousData,
   });
 
@@ -94,7 +94,7 @@ const Page = () => {
 
           <span className="text-sm tabular-nums text-gray-500">
             Page <span className="font-medium text-white">{pageNumber}</span>
-            {data?.next_cursor && <span className="text-gray-500"> · more pages</span>}
+            {data?.next_cursor && <span className="text-gray-500"> &bull; more pages</span>}
           </span>
 
           <button

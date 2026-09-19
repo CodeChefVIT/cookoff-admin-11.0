@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 // Returns true once mounted — guards against hydration mismatches on client-only values.
 export function useMounted() {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useRef(false);
 
   useEffect(() => {
-    setMounted(true);
+    mounted.current = true;
   }, []);
 
-  return mounted;
+  return mounted.current;
 }

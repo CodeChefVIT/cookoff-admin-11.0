@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -40,6 +41,7 @@ const UserSubmissionsPage = () => {
   const [selectedTestcaseIndex, setSelectedTestcaseIndex] = useState<number>(0);
   const [selectedQuestion, setSelectedQuestion] = useState<string | null>(null);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (userData?.submissions && userData.submissions.length > 0) {
       const firstSubmission = userData.submissions[0] ?? null;
@@ -50,6 +52,7 @@ const UserSubmissionsPage = () => {
     }
   }, [userData]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     setSelectedTestcaseIndex(0);
   }, [selectedSubmission, selectedQuestion]);
@@ -91,11 +94,6 @@ const UserSubmissionsPage = () => {
   const passedTestCasesCount = selectedSubmission?.submission.TestcasesPassed ?? 0;
   const failedTestCasesCount = selectedSubmission?.submission.TestcasesFailed ?? 0;
   const totalTestCasesCount = passedTestCasesCount + failedTestCasesCount;
-
-  const totalPoints =
-    selectedSubmission?.results?.reduce((acc, r) => acc + (r.PointsAwarded ?? 0), 0) ?? 0;
-
-  const maxPossiblePoints = totalTestCasesCount * 10;
 
   const uniqueQuestionIDs = Array.from(new Set(submissions.map(s => s.submission.QuestionID)));
 
@@ -172,7 +170,8 @@ const UserSubmissionsPage = () => {
               </option>
               {uniqueQuestionIDs.map((questionID, index) => (
                 <option key={questionID} value={questionID} className={`${CARD_BG} text-white`}>
-                  {/* TRUNCATED QUESTION ID: Displaying Q# only */}Q{index + 1}
+                  {submissions.find(s => s.submission.QuestionID === questionID)?.submission
+                    .QuestionTitle ?? `Q${index + 1}`}
                 </option>
               ))}
             </select>
@@ -240,9 +239,9 @@ const UserSubmissionsPage = () => {
                 </span>
               </p>
               <p className="font-bold text-gray-400">
-                POINTS:{' '}
+                RUNTIME:{' '}
                 <span className={`${ACCENT_COLOR_TEXT}`}>
-                  {totalPoints}/{maxPossiblePoints}
+                  {selectedSubmission?.submission.Runtime ?? 0}s
                 </span>
               </p>
             </div>

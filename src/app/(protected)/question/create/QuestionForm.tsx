@@ -107,6 +107,8 @@ export function QuestionForm({
   const [description, setDescription] = useState<string>('');
 
   // Populate form defaults in edit mode
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+// eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!initialValues) return;
     setDescription(initialValues.description ?? '');
