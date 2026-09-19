@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { FaChartLine, FaClock, FaHome, FaQuestion, FaUser } from 'react-icons/fa';
+import { Clock, HelpCircle, Home, LineChart, User } from 'lucide-react';
 
 import cookoff from '@/assets/images/codechef_logo.svg';
 
@@ -19,33 +19,33 @@ export default function Sidebar() {
     {
       name: 'Dashboard',
       path: '/dashboard',
-      icon: FaHome,
+      icon: Home,
 
       isActive: pathname === '/dashboard',
     },
     {
       name: 'Questions',
       path: '/question',
-      icon: FaQuestion,
+      icon: HelpCircle,
 
       isActive: pathname.startsWith('/question'),
     },
     {
       name: 'Users',
       path: '/users',
-      icon: FaUser,
+      icon: User,
       isActive: pathname === '/users',
     },
     {
       name: 'Timer',
       path: '/timer',
-      icon: FaClock,
+      icon: Clock,
       isActive: pathname === '/timer',
     },
     {
       name: 'Leader',
       path: '/leaderboard',
-      icon: FaChartLine,
+      icon: LineChart,
       isActive: pathname === '/leaderboard',
     },
   ];

@@ -1,7 +1,7 @@
 'use client';
 
 import { type Row } from '@tanstack/react-table';
-import { RiMoreFill } from 'react-icons/ri';
+import { MoreHorizontal } from 'lucide-react';
 
 import { Button } from '../ui/button';
 import {
@@ -47,7 +47,7 @@ export function DataTableRowActions<TData>({
           variant="ghost"
           className={`group aspect-square rounded-full border border-transparent p-1.5 transition-all duration-150 ${HOVER_BG} hover:border-[${ACCENT_GREEN}]/70 data-[state=open]:border-[${ACCENT_GREEN}]/70 data-[state=open]:bg-[${ACCENT_GREEN}]/10`}
         >
-          <RiMoreFill
+          <MoreHorizontal
             className={`size-4 shrink-0 text-gray-400 group-hover:${ACCENT_COLOR_TEXT} group-data-[state=open]:${ACCENT_COLOR_TEXT}`}
             aria-hidden="true"
           />

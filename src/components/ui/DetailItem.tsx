@@ -1,4 +1,4 @@
-import { RiFileCopy2Line } from '@remixicon/react';
+import { Copy } from 'lucide-react';
 
 import useToast from '@/lib/toast';
 
@@ -33,7 +33,7 @@ const ModalDetailText = ({
       <span>{content}</span>
       {copyable && content && (
         <span>
-          <RiFileCopy2Line onClick={handleCopy} size={16} className="hover:cursor-pointer" />
+          <Copy onClick={handleCopy} size={16} className="hover:cursor-pointer" />
         </span>
       )}
     </p>

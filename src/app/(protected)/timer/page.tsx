@@ -1,9 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Clock, Settings, Zap } from 'lucide-react';
+import { CircleStop, Clock, Play, Plus, Settings, Zap } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { FaPlay, FaPlus, FaStopCircle } from 'react-icons/fa';
 
 import { getTime, resetRound, setTime, startRound, updateTime, type TimerState } from '@/api/timer';
 import {
@@ -303,12 +302,12 @@ function Timer() {
                 'Stopping...'
               ) : isRunning ? (
                 <div className="flex items-center gap-2">
-                  <FaStopCircle size={24} />
+                  <CircleStop size={24} />
                   <span className="hidden sm:inline">STOP</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <FaPlay size={20} />
+                  <Play size={20} />
                   <span className="hidden sm:inline">START</span>
                 </div>
               )}
@@ -369,7 +368,7 @@ function Timer() {
               className={`flex items-center justify-center rounded-lg bg-[${ACCENT_GREEN}]/70 p-3 transition sm:p-2.5 hover:bg-[${ACCENT_GREEN}] hover:text-black`}
               onClick={handleAddTime}
             >
-              <FaPlus size={20} className="sm:mr-2" />
+              <Plus size={20} className="sm:mr-2" />
               <span className="hidden font-semibold sm:inline">Add to Timer</span>
             </button>
           </div>
