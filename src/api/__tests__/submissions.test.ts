@@ -63,9 +63,9 @@ describe('submissions API', () => {
     expect(api.get).toHaveBeenCalledWith('/admin/users/u-1/submissions');
     expect(res.user.Name).toBe('John Doe');
     expect(res.submissions).toHaveLength(1);
-    expect(res.submissions[0]!.submission.ID).toBe('sub-1');
-    expect(res.submissions[0]!.submission.QuestionTitle).toBe('Fibonacci');
-    expect(res.submissions[0]!.submission.Status).toBe('accepted');
-    expect(res.submissions[0]!.submission.Runtime).toBe(0.05);
+    expect(res.submissions[0]!.ID).toBe('sub-1');
+    expect(res.submissions[0]!.QuestionTitle).toBe('Fibonacci');
+    expect(res.submissions[0]!.Status).toBe('accepted');
+    expect(res.submissions[0]!.Runtime).toBe(0.05);
   });
 });

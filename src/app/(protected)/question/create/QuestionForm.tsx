@@ -210,24 +210,24 @@ export function QuestionForm({
 
   const updateSolutionBlock = (solIndex: number, blockIndex: number, value: string) => {
     const num = parseInt(value) || 0;
-    setSolutions(prev => prev.map((sol, i) =>
-      i === solIndex ? sol.map((b, j) => j === blockIndex ? num : b) : sol
-    ));
+    setSolutions(prev =>
+      prev.map((sol, i) => (i === solIndex ? sol.map((b, j) => (j === blockIndex ? num : b)) : sol))
+    );
   };
 
   const addSolutionBlock = (solIndex: number) => {
-    setSolutions(prev => prev.map((sol, i) => i === solIndex ? [...sol, 0] : sol));
+    setSolutions(prev => prev.map((sol, i) => (i === solIndex ? [...sol, 0] : sol)));
   };
 
   const deleteSolutionBlock = (solIndex: number, blockIndex: number) => {
-    setSolutions(prev => prev.map((sol, i) =>
-      i === solIndex ? sol.filter((_, j) => j !== blockIndex) : sol
-    ));
+    setSolutions(prev =>
+      prev.map((sol, i) => (i === solIndex ? sol.filter((_, j) => j !== blockIndex) : sol))
+    );
   };
 
   const updateSolutionPoint = (index: number, value: string) => {
     const num = parseFloat(value) || 0;
-    setSolutionPoints(prev => prev.map((p, i) => i === index ? num : p));
+    setSolutionPoints(prev => prev.map((p, i) => (i === index ? num : p)));
   };
 
   return (
@@ -372,23 +372,28 @@ export function QuestionForm({
             </div>
             <div className="col-span-3 flex w-full flex-col gap-4">
               {solutions.map((solution, solIndex) => (
-                <div key={solIndex} className="flex flex-col gap-2 rounded-lg border border-scratch-border/30 bg-scratch-well/20 p-3">
+                <div
+                  key={solIndex}
+                  className="border-scratch-border/30 bg-scratch-well/20 flex flex-col gap-2 rounded-lg border p-3"
+                >
                   <div className="flex items-center justify-between">
-                    <span className="font-scratch-sans text-sm text-scratch-ink">Solution {solIndex + 1}</span>
+                    <span className="font-scratch-sans text-scratch-ink text-sm">
+                      Solution {solIndex + 1}
+                    </span>
                     <div className="flex items-center gap-2">
                       <Input
                         type="number"
                         placeholder="Points"
                         value={solutionPoints[solIndex] ?? 0}
                         onChange={e => updateSolutionPoint(solIndex, e.target.value)}
-                        className="w-20 border border-gray-700 bg-[#253026] text-white focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c] text-sm"
+                        className="w-20 border border-gray-700 bg-[#253026] text-sm text-white focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]"
                       />
                       <ActionButton onClick={() => deleteSolution(solIndex)} isDelete={true}>
                         <Trash2 size={14} />
                       </ActionButton>
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-2 items-center">
+                  <div className="flex flex-wrap items-center gap-2">
                     {solution.map((blockIdx, bIdx) => (
                       <div key={bIdx} className="flex items-center gap-1">
                         <Input
@@ -396,9 +401,12 @@ export function QuestionForm({
                           placeholder="Block idx"
                           value={blockIdx}
                           onChange={e => updateSolutionBlock(solIndex, bIdx, e.target.value)}
-                          className="w-20 border border-gray-700 bg-[#253026] text-white focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c] text-sm"
+                          className="w-20 border border-gray-700 bg-[#253026] text-sm text-white focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c]"
                         />
-                        <ActionButton onClick={() => deleteSolutionBlock(solIndex, bIdx)} isDelete={true}>
+                        <ActionButton
+                          onClick={() => deleteSolutionBlock(solIndex, bIdx)}
+                          isDelete={true}
+                        >
                           <Trash2 size={12} />
                         </ActionButton>
                       </div>

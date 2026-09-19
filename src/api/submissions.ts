@@ -45,13 +45,11 @@ interface RawUserSubmission {
 }
 
 export async function getUserSubmissions(
-  userID: string,
+  userID: string
 ): Promise<{ user: SubmissionUser; submissions: Submission[] }> {
   try {
     const [response, users] = await Promise.all([
-      api.get<{ data: RawUserSubmission[] | null }>(
-        `/admin/users/${userID}/submissions`,
-      ),
+      api.get<{ data: RawUserSubmission[] | null }>(`/admin/users/${userID}/submissions`),
       getUsers(),
     ]);
     const found = users.users.find(u => u.ID === userID);

@@ -124,17 +124,25 @@ const ModalDetails = ({
               <div className="flex flex-col gap-3">
                 {q.Solutions.map((solution, solIndex) =>
                   solution ? (
-                    <div key={solIndex} className="flex items-center gap-3 rounded-md bg-black/50 p-2">
+                    <div
+                      key={solIndex}
+                      className="flex items-center gap-3 rounded-md bg-black/50 p-2"
+                    >
                       <span className="text-sm font-bold text-[#1ba94c]">S{solIndex + 1}:</span>
                       <div className="flex flex-wrap gap-1">
                         {solution.map((blockIdx, bIdx) => (
-                          <span key={bIdx} className="rounded bg-[#253026] px-2 py-0.5 text-sm text-white">
+                          <span
+                            key={bIdx}
+                            className="rounded bg-[#253026] px-2 py-0.5 text-sm text-white"
+                          >
                             {blockIdx}
                           </span>
                         ))}
                       </div>
                       {q.SolutionPoints?.[solIndex] !== undefined && (
-                        <span className="text-sm text-yellow-400">({q.SolutionPoints[solIndex]} pts)</span>
+                        <span className="text-sm text-yellow-400">
+                          ({q.SolutionPoints[solIndex]} pts)
+                        </span>
                       )}
                     </div>
                   ) : null

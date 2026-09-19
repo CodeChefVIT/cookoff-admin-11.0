@@ -208,7 +208,7 @@ export interface VisualSolutionPayload {
 
 export async function CreateVisualBlock(questionId: string, data: VisualBlockPayload) {
   try {
-    const response = await api.post<Envelope<any>>(`/question/${questionId}/blocks`, data);
+    const response = await api.post<Envelope<unknown>>(`/question/${questionId}/blocks`, data);
     return response.data;
   } catch (e) {
     throw handleAPIError(e);
@@ -217,7 +217,7 @@ export async function CreateVisualBlock(questionId: string, data: VisualBlockPay
 
 export async function CreateVisualSolution(questionId: string, data: VisualSolutionPayload) {
   try {
-    const response = await api.post<Envelope<any>>(`/question/${questionId}/solutions`, data);
+    const response = await api.post<Envelope<unknown>>(`/question/${questionId}/solutions`, data);
     return response.data;
   } catch (e) {
     throw handleAPIError(e);
@@ -226,7 +226,7 @@ export async function CreateVisualSolution(questionId: string, data: VisualSolut
 
 export async function DeleteVisualBlock(blockId: string) {
   try {
-    return await api.delete<Envelope<any>>(`/question/blocks/${blockId}`);
+    return await api.delete<Envelope<unknown>>(`/question/blocks/${blockId}`);
   } catch (e) {
     throw handleAPIError(e);
   }
@@ -234,7 +234,7 @@ export async function DeleteVisualBlock(blockId: string) {
 
 export async function DeleteVisualSolution(solutionId: string) {
   try {
-    return await api.delete<Envelope<any>>(`/question/solutions/${solutionId}`);
+    return await api.delete<Envelope<unknown>>(`/question/solutions/${solutionId}`);
   } catch (e) {
     throw handleAPIError(e);
   }

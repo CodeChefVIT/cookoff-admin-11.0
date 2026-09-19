@@ -30,8 +30,7 @@ const UserSubmissionsPage = () => {
     enabled: !!userID,
   });
 
-  const [selectedSubmission, setSelectedSubmission] =
-    useState<Submission | null>(null);
+  const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [selectedQuestion, setSelectedQuestion] = useState<string | null>(null);
 
   useEffect(() => {
@@ -71,9 +70,7 @@ const UserSubmissionsPage = () => {
     );
   }
 
-  const submissionsForSelectedQuestion = submissions.filter(
-    s => s.QuestionID === selectedQuestion
-  );
+  const submissionsForSelectedQuestion = submissions.filter(s => s.QuestionID === selectedQuestion);
 
   const passedTestCasesCount = selectedSubmission?.TestcasesPassed ?? 0;
   const failedTestCasesCount = selectedSubmission?.TestcasesFailed ?? 0;
@@ -152,7 +149,8 @@ const UserSubmissionsPage = () => {
               </option>
               {uniqueQuestionIDs.map((questionID, index) => (
                 <option key={questionID} value={questionID} className={`${CARD_BG} text-white`}>
-                  {submissions.find(s => s.QuestionID === questionID)?.QuestionTitle ?? `Q${index + 1}`}
+                  {submissions.find(s => s.QuestionID === questionID)?.QuestionTitle ??
+                    `Q${index + 1}`}
                 </option>
               ))}
             </select>
@@ -189,8 +187,7 @@ const UserSubmissionsPage = () => {
                         isSuccess ? 'bg-green-600 text-black' : 'bg-red-600 text-white'
                       }`}
                     >
-                      {s.TestcasesPassed ?? 0}/
-                      {(s.TestcasesFailed ?? 0) + (s.TestcasesPassed ?? 0)}
+                      {s.TestcasesPassed ?? 0}/{(s.TestcasesFailed ?? 0) + (s.TestcasesPassed ?? 0)}
                     </span>
                   </div>
                 </div>
@@ -220,9 +217,7 @@ const UserSubmissionsPage = () => {
               </p>
               <p className="font-bold text-gray-400">
                 RUNTIME:{' '}
-                <span className={`${ACCENT_COLOR_TEXT}`}>
-                  {selectedSubmission?.Runtime ?? 0}s
-                </span>
+                <span className={`${ACCENT_COLOR_TEXT}`}>{selectedSubmission?.Runtime ?? 0}s</span>
               </p>
             </div>
           </div>
