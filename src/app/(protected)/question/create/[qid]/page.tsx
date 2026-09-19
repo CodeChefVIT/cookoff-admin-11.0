@@ -81,6 +81,8 @@ const EditQuestion = () => {
         explanations: question.Explanation,
         inputFormats: question.InputFormat,
         scratchBlocks: question.ScratchBlocks,
+        solutions: question.Solutions,
+        solutionPoints: question.SolutionPoints,
       }}
       onSubmit={data => updateQuestion.mutate(data)}
       isPending={updateQuestion.isPending}

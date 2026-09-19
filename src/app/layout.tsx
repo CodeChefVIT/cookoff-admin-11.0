@@ -4,7 +4,6 @@ import Sidebar from '@/components/ui/sidebar';
 import '@/styles/globals.css';
 
 import { type Metadata } from 'next';
-import { GeistSans } from 'geist/font/sans';
 import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
@@ -25,7 +24,7 @@ export const metadata: Metadata = {
 };
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
+    <html lang="en" className="h-full" style={{'--font-sans':'ui-sans-serif, system-ui, -apple-system, sans-serif','--font-geist-sans':'ui-sans-serif, system-ui, -apple-system, sans-serif','--font-display':'ui-sans-serif, system-ui, -apple-system, sans-serif'} as React.CSSProperties}>
       <body>
         <Sidebar />
         <div className="z-0 bg-black">

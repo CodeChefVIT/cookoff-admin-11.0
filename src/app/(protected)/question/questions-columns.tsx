@@ -31,6 +31,8 @@ export interface QuestionsDataProps {
   BuyIn?: number;
   Reward?: number;
   ScratchBlocks?: string[];
+  Solutions?: number[][];
+  SolutionPoints?: number[];
 }
 
 const columnHelper = createColumnHelper<QuestionsDataProps>();
