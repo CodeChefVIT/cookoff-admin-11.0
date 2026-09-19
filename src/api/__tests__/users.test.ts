@@ -5,6 +5,7 @@ import {
   banUser,
   getAdminSession,
   getUsers,
+  logout,
   normalizeUser,
   unbanUser,
   upgradeUserToRound,

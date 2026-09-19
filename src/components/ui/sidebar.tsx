@@ -2,8 +2,9 @@
 
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { Clock, HelpCircle, Home, LineChart, User } from 'lucide-react';
+import { Clock, HelpCircle, Home, LineChart, LogOut, User } from 'lucide-react';
 
+import { logout } from '@/api/users';
 import cookoff from '@/assets/images/codechef_logo.svg';
 
 const ACCENT_GREEN = '#1ba94c';
@@ -20,14 +21,12 @@ export default function Sidebar() {
       name: 'Dashboard',
       path: '/dashboard',
       icon: Home,
-
       isActive: pathname === '/dashboard',
     },
     {
       name: 'Questions',
       path: '/question',
       icon: HelpCircle,
-
       isActive: pathname.startsWith('/question'),
     },
     {
@@ -50,6 +49,16 @@ export default function Sidebar() {
     },
   ];
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch {
+      // Continue to redirect even if network fails
+    } finally {
+      router.push('/');
+    }
+  };
+
   const getLinkClasses = (isActive: boolean) => {
     const baseClasses = `m-2 mx-3 rounded-md p-3 text-left text-lg transition-all duration-150`;
     if (isActive) {
@@ -61,39 +70,53 @@ export default function Sidebar() {
 
   return (
     <nav
-      className={`${pathname === '/' ? 'hidden' : 'flex'} fixed z-10 float-left flex h-screen w-52 flex-col border-r border-[${ACCENT_GREEN}]/20 ${DARK_BG} transition-all duration-300`}
+      className={`${pathname === '/' ? 'hidden' : 'flex'} fixed z-10 float-left flex h-screen w-52 flex-col justify-between border-r border-[${ACCENT_GREEN}]/20 ${DARK_BG} transition-all duration-300`}
     >
-      <div
-        className={`flex items-center gap-2 p-4 pt-6 text-xl font-bold uppercase tracking-wider ${ACCENT_COLOR_TEXT}`}
-      >
-        <Image
-          className="border-r border-gray-600 pr-2"
-          src={cookoff as HTMLImageElement}
-          alt="cookoff text"
-          width={40}
-          height={40}
-        />
-        COOK OFF
+      <div>
+        <div
+          className={`flex items-center gap-2 p-4 pt-6 text-xl font-bold uppercase tracking-wider ${ACCENT_COLOR_TEXT}`}
+        >
+          <Image
+            className="border-r border-gray-600 pr-2"
+            src={cookoff as HTMLImageElement}
+            alt="cookoff text"
+            width={40}
+            height={40}
+          />
+          COOK OFF
+        </div>
+
+        <div className="mt-8 flex flex-col gap-1">
+          {navItems.map(item => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.path}
+                onClick={() => {
+                  router.push(item.path);
+                }}
+                className={getLinkClasses(item.isActive)}
+              >
+                <div className="flex items-center gap-3">
+                  <Icon
+                    className={item.isActive ? '' : `text-white/60 hover:${ACCENT_COLOR_TEXT}`}
+                  />
+                  {item.name}
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      <div className="mt-8 flex flex-col gap-1">
-        {navItems.map(item => {
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.path}
-              onClick={() => {
-                router.push(item.path);
-              }}
-              className={getLinkClasses(item.isActive)}
-            >
-              <div className="flex items-center gap-3">
-                <Icon className={item.isActive ? '' : `text-white/60 hover:${ACCENT_COLOR_TEXT}`} />
-                {item.name}
-              </div>
-            </button>
-          );
-        })}
+      <div className="mb-2 p-3">
+        <button
+          onClick={handleLogout}
+          className="flex w-full items-center gap-3 rounded-md p-3 text-left text-lg font-medium text-red-500/90 transition-all duration-150 hover:bg-red-500/10 hover:text-red-400"
+        >
+          <LogOut size={20} />
+          Logout
+        </button>
       </div>
     </nav>
   );

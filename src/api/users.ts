@@ -330,3 +330,11 @@ export async function upgradeAllUsers(payload?: UpgradeAllUsersPayload | number)
     throw handleAPIError(error);
   }
 }
+
+export async function logout(): Promise<void> {
+  try {
+    await api.post('/logout');
+  } catch (error) {
+    throw handleAPIError(error);
+  }
+}
