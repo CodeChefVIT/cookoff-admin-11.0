@@ -19,6 +19,8 @@ export interface CreateQuestionParams {
   ScratchBlocks?: string[];
   BuyIn?: number;
   Reward?: number;
+  Solutions?: number[][];
+  SolutionPoints?: number[];
 }
 
 export interface UpdateQuestionParams {
@@ -38,6 +40,8 @@ export interface UpdateQuestionParams {
   ScratchBlocks?: string[];
   BuyIn?: number;
   Reward?: number;
+  Solutions?: number[][];
+  SolutionPoints?: number[];
 }
 
 export interface QuestionResponse {
@@ -57,6 +61,8 @@ export interface QuestionResponse {
   ScratchBlocks?: string[];
   BuyIn?: number;
   Reward?: number;
+  Solutions?: number[][];
+  SolutionPoints?: number[];
 }
 
 // The backend speaks snake_case inside a {success, message, data} envelope;
@@ -78,6 +84,8 @@ interface RawQuestion {
   explanation?: string[];
   bounty_active: boolean;
   scratch_blocks?: string[];
+  solutions?: number[][];
+  solution_points?: number[];
 }
 
 interface Envelope<T> {
@@ -115,6 +123,8 @@ export function normalizeQuestion(q: RawQuestion): QuestionResponse {
     BuyIn: toNumber(q.buy_in),
     Reward: toNumber(q.reward),
     ScratchBlocks: q.scratch_blocks ?? [],
+    Solutions: q.solutions ?? [],
+    SolutionPoints: q.solution_points ?? [],
   };
 }
 
@@ -135,6 +145,8 @@ function toRequest(d: CreateQuestionParams | UpdateQuestionParams) {
     explanation: d.Explanation,
     bounty_active: d.Isbountyactive ?? false,
     scratch_blocks: d.ScratchBlocks ?? [],
+    solutions: d.Solutions ?? [],
+    solution_points: d.SolutionPoints ?? [],
   };
 }
 
