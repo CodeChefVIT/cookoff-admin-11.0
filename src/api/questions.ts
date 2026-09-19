@@ -77,6 +77,7 @@ interface RawQuestion {
   sample_test_output?: string[];
   explanation?: string[];
   bounty_active: boolean;
+  scratch_blocks?: string[];
 }
 
 interface Envelope<T> {
@@ -113,6 +114,7 @@ export function normalizeQuestion(q: RawQuestion): QuestionResponse {
     Explanation: q.explanation ?? [],
     BuyIn: toNumber(q.buy_in),
     Reward: toNumber(q.reward),
+    ScratchBlocks: q.scratch_blocks ?? [],
   };
 }
 
@@ -132,6 +134,7 @@ function toRequest(d: CreateQuestionParams | UpdateQuestionParams) {
     sample_test_output: d.SampleTestOutput,
     explanation: d.Explanation,
     bounty_active: d.Isbountyactive ?? false,
+    scratch_blocks: d.ScratchBlocks ?? [],
   };
 }
 
@@ -175,6 +178,51 @@ export async function UpdateQuestion(data: UpdateQuestionParams) {
   try {
     const response = await api.put<Envelope<RawQuestion>>(`/question/${data.ID}`, toRequest(data));
     return normalizeQuestion(response.data.data);
+  } catch (e) {
+    throw handleAPIError(e);
+  }
+}
+
+export interface VisualBlockPayload {
+  question_id: string;
+  content: string;
+}
+
+export interface VisualSolutionPayload {
+  question_id: string;
+  solution: string[];
+  points: number;
+}
+
+export async function CreateVisualBlock(questionId: string, data: VisualBlockPayload) {
+  try {
+    const response = await api.post<Envelope<any>>(`/question/${questionId}/blocks`, data);
+    return response.data;
+  } catch (e) {
+    throw handleAPIError(e);
+  }
+}
+
+export async function CreateVisualSolution(questionId: string, data: VisualSolutionPayload) {
+  try {
+    const response = await api.post<Envelope<any>>(`/question/${questionId}/solutions`, data);
+    return response.data;
+  } catch (e) {
+    throw handleAPIError(e);
+  }
+}
+
+export async function DeleteVisualBlock(blockId: string) {
+  try {
+    return await api.delete<Envelope<any>>(`/question/blocks/${blockId}`);
+  } catch (e) {
+    throw handleAPIError(e);
+  }
+}
+
+export async function DeleteVisualSolution(solutionId: string) {
+  try {
+    return await api.delete<Envelope<any>>(`/question/solutions/${solutionId}`);
   } catch (e) {
     throw handleAPIError(e);
   }

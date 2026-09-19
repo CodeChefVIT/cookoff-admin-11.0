@@ -25,6 +25,8 @@ export interface CreateQuestionPayload {
   ScratchBlocks: string[];
   BuyIn?: number;
   Reward?: number;
+  Solutions?: number[][];
+  SolutionPoints?: number[];
 }
 
 interface QuestionFormProps {
@@ -43,6 +45,8 @@ interface QuestionFormProps {
     explanations?: string[];
     inputFormats?: string[];
     scratchBlocks?: string[];
+    solutions?: number[][];
+    solutionPoints?: number[];
   };
   onSubmit: (data: CreateQuestionPayload) => void;
   isPending: boolean;
@@ -105,6 +109,8 @@ export function QuestionForm({
   const [inputFormats, setInputFormats] = useState<string[]>(['']);
   const [scratchBlocks, setScratchBlocks] = useState<string[]>(['']);
   const [description, setDescription] = useState<string>('');
+  const [solutions, setSolutions] = useState<number[][]>([[]]);
+  const [solutionPoints, setSolutionPoints] = useState<number[]>([0]);
 
   // Populate form defaults in edit mode
   // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -117,6 +123,8 @@ export function QuestionForm({
     setExplanations(initialValues.explanations?.length ? initialValues.explanations : ['']);
     setInputFormats(initialValues.inputFormats?.length ? initialValues.inputFormats : ['']);
     setScratchBlocks(initialValues.scratchBlocks?.length ? initialValues.scratchBlocks : ['']);
+    setSolutions(initialValues.solutions?.length ? initialValues.solutions : [[]]);
+    setSolutionPoints(initialValues.solutionPoints?.length ? initialValues.solutionPoints : [0]);
     setSelectedRound(initialValues.round ?? 1);
     setValue('Title', initialValues.title ?? '');
     setValue('Description', initialValues.description ?? '');
@@ -143,6 +151,8 @@ export function QuestionForm({
     ScratchBlocks: scratchBlocks,
     BuyIn: data.BuyIn ? Number(data.BuyIn) : undefined,
     Reward: data.Reward ? Number(data.Reward) : undefined,
+    Solutions: solutions,
+    SolutionPoints: solutionPoints,
   });
 
   const handleSubmitForm = (data: CreateQuestionPayload) => {
@@ -186,6 +196,38 @@ export function QuestionForm({
     const setter = updaters[type as keyof typeof updaters];
     if (!setter) return;
     setter((prev: string[]) => [...prev, '']);
+  };
+
+  const addSolution = () => {
+    setSolutions(prev => [...prev, []]);
+    setSolutionPoints(prev => [...prev, 0]);
+  };
+
+  const deleteSolution = (index: number) => {
+    setSolutions(prev => prev.filter((_, i) => i !== index));
+    setSolutionPoints(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const updateSolutionBlock = (solIndex: number, blockIndex: number, value: string) => {
+    const num = parseInt(value) || 0;
+    setSolutions(prev => prev.map((sol, i) =>
+      i === solIndex ? sol.map((b, j) => j === blockIndex ? num : b) : sol
+    ));
+  };
+
+  const addSolutionBlock = (solIndex: number) => {
+    setSolutions(prev => prev.map((sol, i) => i === solIndex ? [...sol, 0] : sol));
+  };
+
+  const deleteSolutionBlock = (solIndex: number, blockIndex: number) => {
+    setSolutions(prev => prev.map((sol, i) =>
+      i === solIndex ? sol.filter((_, j) => j !== blockIndex) : sol
+    ));
+  };
+
+  const updateSolutionPoint = (index: number, value: string) => {
+    const num = parseFloat(value) || 0;
+    setSolutionPoints(prev => prev.map((p, i) => i === index ? num : p));
   };
 
   return (
@@ -313,6 +355,58 @@ export function QuestionForm({
                   <ActionButton onClick={() => deleteEntry(index, 'scratch')} isDelete={true}>
                     <Trash2 size={18} />
                   </ActionButton>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Valid Solutions (Round 1) */}
+        {selectedRound === 1 && (
+          <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-4">
+            <div className="flex flex-row items-center justify-end gap-2">
+              <FormLabel htmlFor="solutions">Valid Solutions</FormLabel>
+              <ActionButton onClick={addSolution}>
+                <Plus size={16} />
+              </ActionButton>
+            </div>
+            <div className="col-span-3 flex w-full flex-col gap-4">
+              {solutions.map((solution, solIndex) => (
+                <div key={solIndex} className="flex flex-col gap-2 rounded-lg border border-scratch-border/30 bg-scratch-well/20 p-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-scratch-sans text-sm text-scratch-ink">Solution {solIndex + 1}</span>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="number"
+                        placeholder="Points"
+                        value={solutionPoints[solIndex] ?? 0}
+                        onChange={e => updateSolutionPoint(solIndex, e.target.value)}
+                        className="w-20 border border-gray-700 bg-[#253026] text-white focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c] text-sm"
+                      />
+                      <ActionButton onClick={() => deleteSolution(solIndex)} isDelete={true}>
+                        <Trash2 size={14} />
+                      </ActionButton>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    {solution.map((blockIdx, bIdx) => (
+                      <div key={bIdx} className="flex items-center gap-1">
+                        <Input
+                          type="number"
+                          placeholder="Block idx"
+                          value={blockIdx}
+                          onChange={e => updateSolutionBlock(solIndex, bIdx, e.target.value)}
+                          className="w-20 border border-gray-700 bg-[#253026] text-white focus:border-[#1ba94c] focus:ring-1 focus:ring-[#1ba94c] text-sm"
+                        />
+                        <ActionButton onClick={() => deleteSolutionBlock(solIndex, bIdx)} isDelete={true}>
+                          <Trash2 size={12} />
+                        </ActionButton>
+                      </div>
+                    ))}
+                    <ActionButton onClick={() => addSolutionBlock(solIndex)}>
+                      <Plus size={12} />
+                    </ActionButton>
+                  </div>
                 </div>
               ))}
             </div>
