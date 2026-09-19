@@ -6,11 +6,7 @@ import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle, Clock, Hash, User } from 'lucide-react';
 
-import {
-  getUserSubmissions,
-  type SubmissionWithResultsAndTestcases,
-  type UserWithSubmissions,
-} from '@/api/submissions';
+import { getUserSubmissions, type Submission, type SubmissionUser } from '@/api/submissions';
 import { CopyButton } from '@/components/ui/CopyButton';
 
 const ACCENT_GREEN = '#1ba94c';
@@ -19,8 +15,6 @@ const DARK_BG = 'bg-[#0E150F]';
 const CARD_BG = 'bg-[#182319]';
 const CODE_BG = 'bg-[#0F1011]';
 const BORDER_COLOR = `border-[${ACCENT_GREEN}]/40`;
-const SUCCESS_TINT = 'bg-green-500/10 text-green-400 border-green-700/50';
-const FAILURE_TINT = 'bg-red-500/10 text-red-400 border-red-700/50';
 
 const UserSubmissionsPage = () => {
   const params = useParams();
@@ -30,38 +24,30 @@ const UserSubmissionsPage = () => {
     data: userData,
     error,
     isLoading,
-  } = useQuery<UserWithSubmissions, Error>({
+  } = useQuery<{ user: SubmissionUser; submissions: Submission[] }, Error>({
     queryKey: ['user-submissions', userID],
     queryFn: () => getUserSubmissions(userID),
     enabled: !!userID,
   });
 
   const [selectedSubmission, setSelectedSubmission] =
-    useState<SubmissionWithResultsAndTestcases | null>(null);
-  const [selectedTestcaseIndex, setSelectedTestcaseIndex] = useState<number>(0);
+    useState<Submission | null>(null);
   const [selectedQuestion, setSelectedQuestion] = useState<string | null>(null);
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (userData?.submissions && userData.submissions.length > 0) {
       const firstSubmission = userData.submissions[0] ?? null;
       if (!firstSubmission) return;
       setSelectedSubmission(firstSubmission);
-      setSelectedQuestion(firstSubmission.submission.QuestionID);
-      setSelectedTestcaseIndex(0);
+      setSelectedQuestion(firstSubmission.QuestionID);
     }
   }, [userData]);
-
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => {
-    setSelectedTestcaseIndex(0);
-  }, [selectedSubmission, selectedQuestion]);
 
   if (isLoading) return <div className={`p-6 ${DARK_BG} text-white`}>Loading submissions...</div>;
   if (error) return <div className={`p-6 ${DARK_BG} text-red-500`}>Error: {error.message}</div>;
 
   const { user, submissions } = userData ?? {
-    user: { ID: userID, Name: 'Unknown' },
+    user: { Name: 'Unknown', Email: '', RegNo: '', Role: '', Score: 0, RoundQualified: 0 },
     submissions: [],
   };
 
@@ -86,16 +72,14 @@ const UserSubmissionsPage = () => {
   }
 
   const submissionsForSelectedQuestion = submissions.filter(
-    s => s.submission.QuestionID === selectedQuestion
+    s => s.QuestionID === selectedQuestion
   );
 
-  const selectedTestcase = selectedSubmission?.results?.[selectedTestcaseIndex];
-
-  const passedTestCasesCount = selectedSubmission?.submission.TestcasesPassed ?? 0;
-  const failedTestCasesCount = selectedSubmission?.submission.TestcasesFailed ?? 0;
+  const passedTestCasesCount = selectedSubmission?.TestcasesPassed ?? 0;
+  const failedTestCasesCount = selectedSubmission?.TestcasesFailed ?? 0;
   const totalTestCasesCount = passedTestCasesCount + failedTestCasesCount;
 
-  const uniqueQuestionIDs = Array.from(new Set(submissions.map(s => s.submission.QuestionID)));
+  const uniqueQuestionIDs = Array.from(new Set(submissions.map(s => s.QuestionID)));
 
   const isAccepted = passedTestCasesCount > 0 && failedTestCasesCount === 0;
 
@@ -138,10 +122,8 @@ const UserSubmissionsPage = () => {
       </div>
 
       {/* Main Content Area: Fixed Height for Scrolling */}
-      {/* This container defines the fixed height of the scrollable component page */}
       <div className="flex w-full flex-1 gap-6" style={{ height: '100vh' }}>
         {/* Left Panel: Question and Submission Selector (SCROLL CONTAINER) */}
-        {/* Changed `overflow-hidden` to `flex-col` and removed unnecessary `overflow-y-auto` from here */}
         <div
           className={`flex w-[300px] shrink-0 flex-col rounded-xl ${CARD_BG} overflow-hidden border border-gray-700 p-4 shadow-lg`}
         >
@@ -160,7 +142,7 @@ const UserSubmissionsPage = () => {
                 const newQuestionID = e.target.value;
                 setSelectedQuestion(newQuestionID);
                 const firstSubmissionForNewQuestion = submissions.find(
-                  s => s.submission.QuestionID === newQuestionID
+                  s => s.QuestionID === newQuestionID
                 );
                 setSelectedSubmission(firstSubmissionForNewQuestion ?? null);
               }}
@@ -170,8 +152,7 @@ const UserSubmissionsPage = () => {
               </option>
               {uniqueQuestionIDs.map((questionID, index) => (
                 <option key={questionID} value={questionID} className={`${CARD_BG} text-white`}>
-                  {submissions.find(s => s.submission.QuestionID === questionID)?.submission
-                    .QuestionTitle ?? `Q${index + 1}`}
+                  {submissions.find(s => s.QuestionID === questionID)?.QuestionTitle ?? `Q${index + 1}`}
                 </option>
               ))}
             </select>
@@ -183,15 +164,14 @@ const UserSubmissionsPage = () => {
           <p className="mb-1 shrink-0 text-sm text-gray-400">Submissions for this question:</p>
 
           {/* Submission List (The Scrollable Area) */}
-          {/* flex-1 ensures it fills the available vertical space, and overflow-y-auto makes the list scrollable */}
           <div className="flex flex-1 flex-col space-y-2 overflow-y-auto">
             {submissionsForSelectedQuestion.map(s => {
-              const isSelected = selectedSubmission?.submission.ID === s.submission.ID;
-              const isSuccess = s.submission.TestcasesFailed === 0;
+              const isSelected = selectedSubmission?.ID === s.ID;
+              const isSuccess = s.TestcasesFailed === 0;
 
               return (
                 <div
-                  key={s.submission.ID}
+                  key={s.ID}
                   onClick={() => setSelectedSubmission(s)}
                   className={`cursor-pointer rounded-lg border p-3 transition-all duration-200 ${
                     isSelected
@@ -202,15 +182,15 @@ const UserSubmissionsPage = () => {
                   <div className="flex items-center justify-between">
                     <span className="font-semibold text-white/90">
                       <Clock className="mr-2 inline h-4 w-4 text-gray-500" />
-                      {new Date(s.submission.SubmissionTime).toLocaleTimeString()}
+                      {new Date(s.SubmissionTime).toLocaleTimeString()}
                     </span>
                     <span
                       className={`rounded-full px-2 py-1 text-xs font-bold ${
                         isSuccess ? 'bg-green-600 text-black' : 'bg-red-600 text-white'
                       }`}
                     >
-                      {s.submission.TestcasesPassed ?? 0}/
-                      {(s.submission.TestcasesFailed ?? 0) + (s.submission.TestcasesPassed ?? 0)}
+                      {s.TestcasesPassed ?? 0}/
+                      {(s.TestcasesFailed ?? 0) + (s.TestcasesPassed ?? 0)}
                     </span>
                   </div>
                 </div>
@@ -241,73 +221,27 @@ const UserSubmissionsPage = () => {
               <p className="font-bold text-gray-400">
                 RUNTIME:{' '}
                 <span className={`${ACCENT_COLOR_TEXT}`}>
-                  {selectedSubmission?.submission.Runtime ?? 0}s
+                  {selectedSubmission?.Runtime ?? 0}s
                 </span>
               </p>
             </div>
           </div>
 
-          {/* Inner Content: Test Case List and Details (Scrollable) */}
+          {/* Inner Content: Test Case Details and Source Code (Scrollable) */}
           <div className="flex flex-1 gap-6 overflow-hidden">
-            {/* Left Column (Test Case List - Scrollable) */}
-            <div className="flex w-1/3 shrink-0 flex-col space-y-2 overflow-y-auto pr-2">
-              <p className="mb-1 shrink-0 text-sm font-bold uppercase text-gray-400">
-                Test Case Results
-              </p>
-              {selectedSubmission?.results?.map((test, index) => {
-                const isTestAccepted = test.Status === 'Accepted';
-
-                return (
-                  <div
-                    key={test.ID}
-                    onClick={() => setSelectedTestcaseIndex(index)}
-                    className={`flex cursor-pointer items-center rounded-md border p-3 text-sm font-semibold transition-all duration-200 ${
-                      selectedTestcaseIndex === index
-                        ? isTestAccepted
-                          ? SUCCESS_TINT
-                          : FAILURE_TINT
-                        : 'border-gray-700 hover:bg-gray-800'
-                    }`}
-                  >
-                    TEST CASE {index + 1}
-                    <span className="ml-auto">{isTestAccepted ? '✔ Passed' : '✖ Failed'}</span>
-                  </div>
-                );
-              })}
-            </div>
-
             {/* Right Column (Test Case Details and Source Code - Scrollable) */}
             <div className="flex w-2/3 flex-col space-y-4 overflow-y-auto">
-              {/* Test Case Details (Input/Expected) */}
-              <div className={`shrink-0 rounded-md ${CODE_BG} border border-gray-700 p-4 text-sm`}>
-                <p className="mb-2 font-bold uppercase text-gray-400">Selected Test Case Details</p>
-                <div className="space-y-3">
-                  <div>
-                    <p className={`font-bold ${ACCENT_COLOR_TEXT}`}>INPUT</p>
-                    <pre className="mt-1 w-full overflow-x-auto rounded-sm border border-gray-800 p-2 font-mono text-xs text-white/90">
-                      {selectedTestcase?.testcase?.Input ?? 'N/A'}
-                    </pre>
-                  </div>
-                  <div>
-                    <p className="font-bold text-red-400">EXPECTED OUTPUT</p>
-                    <pre className="mt-1 w-full overflow-x-auto rounded-sm border border-gray-800 p-2 font-mono text-xs text-white/90">
-                      {selectedTestcase?.testcase?.ExpectedOutput ?? 'N/A'}
-                    </pre>
-                  </div>
-                </div>
-              </div>
-
               {/* Source Code */}
               <div className={`flex-1 rounded-md ${CODE_BG} border border-gray-700 p-4 text-sm`}>
                 <p className="mb-2 font-bold uppercase text-gray-400">Source Code</p>
                 <div className="w-full overflow-y-auto">
                   <pre className="w-full overflow-x-auto p-2 font-mono text-xs text-white/90">
-                    {selectedSubmission?.submission.SourceCode ?? 'No source code available.'}
+                    {selectedSubmission?.SourceCode ?? 'No source code available.'}
                   </pre>
                 </div>
                 <div className="mt-2 flex justify-end">
                   <CopyButton
-                    content={selectedSubmission?.submission.SourceCode ?? ''}
+                    content={selectedSubmission?.SourceCode ?? ''}
                     className={`text-gray-500 hover:text-white`}
                   />
                 </div>

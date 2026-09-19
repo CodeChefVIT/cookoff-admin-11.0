@@ -57,32 +57,6 @@ export interface LeaderboardUser {
   SolvedCount?: number;
 }
 
-export interface Submission {
-  ID: string;
-  QuestionID: string;
-  TestcasesPassed?: number;
-  TestcasesFailed?: number;
-  Runtime?: number;
-  SubmissionTime: string;
-  SourceCode: string;
-  LanguageID: number;
-  Description?: string;
-  Memory?: number;
-  UserID?: string;
-  Status?: string;
-}
-
-export interface SubmissionResult {
-  ID: string;
-  TestcaseID?: string;
-  SubmissionID: string;
-  Runtime?: number;
-  Memory?: number;
-  PointsAwarded: number;
-  Status: string;
-  Description?: string;
-}
-
 export interface SetUserRoundProps {
   user_ids: string[];
   round?: number;
@@ -225,21 +199,6 @@ export async function upgradeUserToRound(id: string, payload?: UpgradeUserPayloa
       status: 'success',
       message: response.data?.message ?? 'User upgraded successfully',
     };
-  } catch (error) {
-    throw handleAPIError(error);
-  }
-}
-
-export async function getSubmissionsByUser(id: string) {
-  try {
-    const response = await api.get<
-      ApiResponse<Submission[]> | { status: string; submissions: Submission[] }
-    >(`/admin/users/${id}/submissions`);
-
-    if (response.data && 'data' in response.data && Array.isArray(response.data.data)) {
-      return response.data.data;
-    }
-    return (response.data as { submissions: Submission[] }).submissions ?? [];
   } catch (error) {
     throw handleAPIError(error);
   }
