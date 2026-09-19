@@ -1,7 +1,7 @@
 'use client';
 
 import { createColumnHelper, type ColumnDef } from '@tanstack/react-table';
-import { GrHide } from 'react-icons/gr';
+import { EyeOff } from 'lucide-react';
 
 import { type TestCaseResponse } from '@/api/testcases';
 import { DataTableColumnHeader } from '@/components/Table/DataTableColumnHeader';
@@ -23,7 +23,7 @@ export const TestcaseDataColumn = [
     header: ({ column }) => <DataTableColumnHeader column={column} title="ID" />,
     cell: ({ row }) => (
       <div className={`flex items-center gap-2 font-mono text-white`}>
-        {row.original.Hidden && <GrHide size={16} className={ACCENT_COLOR_TEXT} />}
+        {row.original.Hidden && <EyeOff size={16} className={ACCENT_COLOR_TEXT} />}
         {row.getValue('ID')}
       </div>
     ),

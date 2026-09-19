@@ -107,13 +107,16 @@ describe('questions API', () => {
     };
 
     const res = await CreateQuestion(params);
-    expect(api.post).toHaveBeenCalledWith('/question', expect.objectContaining({
-      title: 'Two Sum',
-      type: 'code',
-      points: 100,
-      buy_in: 10.5,
-      reward: 50.0,
-    }));
+    expect(api.post).toHaveBeenCalledWith(
+      '/question',
+      expect.objectContaining({
+        title: 'Two Sum',
+        type: 'code',
+        points: 100,
+        buy_in: 10.5,
+        reward: 50.0,
+      })
+    );
     expect(res.ID).toBe('q-123');
   });
 
@@ -143,10 +146,13 @@ describe('questions API', () => {
     };
 
     const res = await UpdateQuestion(updateParams);
-    expect(api.put).toHaveBeenCalledWith('/question/q-123', expect.objectContaining({
-      title: 'Two Sum Updated',
-      points: 150,
-    }));
+    expect(api.put).toHaveBeenCalledWith(
+      '/question/q-123',
+      expect.objectContaining({
+        title: 'Two Sum Updated',
+        points: 150,
+      })
+    );
     expect(res.ID).toBe('q-123');
   });
 

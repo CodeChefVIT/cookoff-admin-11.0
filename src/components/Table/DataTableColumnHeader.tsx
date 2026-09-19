@@ -1,5 +1,5 @@
 import { type Column } from '@tanstack/react-table';
-import { RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
@@ -38,7 +38,7 @@ export function DataTableColumnHeader<TData, TValue>({
 
       {column.getCanSort() ? (
         <div className="flex flex-col justify-center leading-none">
-          <RiArrowUpSLine
+          <ChevronUp
             className={cn(
               'size-4 transition-opacity duration-150',
               column.getIsSorted() === 'asc'
@@ -47,7 +47,7 @@ export function DataTableColumnHeader<TData, TValue>({
             )}
             aria-hidden="true"
           />
-          <RiArrowDownSLine
+          <ChevronDown
             className={cn(
               '-mt-1 size-4 transition-opacity duration-150',
               column.getIsSorted() === 'desc'

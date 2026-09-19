@@ -7,8 +7,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@radix-ui/react-dropdown-menu';
-import { MixerHorizontalIcon } from '@radix-ui/react-icons';
 import { type Table } from '@tanstack/react-table';
+import { SlidersHorizontal } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { DropdownMenu } from '@/components/ui/dropdown-menu';
@@ -34,7 +34,7 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
             `hover:bg-[${ACCENT_GREEN}]/10 hover:border-[${ACCENT_GREEN}]`
           )}
         >
-          <MixerHorizontalIcon className={`mr-2 h-4 w-4 ${ACCENT_COLOR_TEXT}`} />
+          <SlidersHorizontal className={`mr-2 h-4 w-4 ${ACCENT_COLOR_TEXT}`} />
           View Options
         </Button>
       </DropdownMenuTrigger>

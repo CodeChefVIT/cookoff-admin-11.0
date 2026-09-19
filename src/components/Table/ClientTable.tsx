@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
-import { RiLoader2Fill } from 'react-icons/ri';
+import { Loader2 } from 'lucide-react';
 
 import { Button } from '../ui/button';
 import { DataTable } from './DataTable';
@@ -33,7 +33,7 @@ function ClientTable<T>({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <RiLoader2Fill className="animate-spin text-2xl text-[#1ba94c]" />
+        <Loader2 className="animate-spin text-2xl text-[#1ba94c]" />
       </div>
     );
   }

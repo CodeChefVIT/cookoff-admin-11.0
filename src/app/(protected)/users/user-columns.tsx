@@ -1,6 +1,6 @@
 import Link from 'next/dist/client/link';
 import { createColumnHelper, type ColumnDef } from '@tanstack/react-table';
-import { FaCrown, FaEye } from 'react-icons/fa6';
+import { Crown, Eye } from 'lucide-react';
 
 import { type User } from '@/api/users';
 import { DataTableColumnHeader } from '@/components/Table/DataTableColumnHeader';
@@ -40,7 +40,7 @@ export const UserDataColumn = [
     header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
     cell: ({ row }) => (
       <div className="flex gap-2">
-        {row.original.Role === 'admin' && <FaCrown size={16} />}
+        {row.original.Role === 'admin' && <Crown size={16} />}
         {row.getValue('Name')}
       </div>
     ),
@@ -99,7 +99,7 @@ export const UserDataColumn = [
         // Use the Accent Green for the text and hover effect
         className={`${ACCENT_COLOR_TEXT} hover:underline`}
       >
-        View <FaEye className="inline" />
+        View <Eye className="inline h-4 w-4" />
       </Link>
     ),
   }),

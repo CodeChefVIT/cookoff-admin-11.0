@@ -60,7 +60,6 @@ src/
       index.ts
     ui/                 # shadcn-style primitive components
       button.tsx
-      sonner.tsx        # Sonner shim — react-hot-toast is the primary toaster
   api/                  # HTTP layer
     client.ts           # axios instance `api` + createApiClient()
     errors.ts           # ApiError class, isApiError(), toApiError()

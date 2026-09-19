@@ -318,13 +318,22 @@ export async function upgradeAllUsers(payload?: UpgradeAllUsersPayload | number)
     }
 
     const response = await api.post<
-      ApiResponse<{ round_qualified: number; users_upgraded: number }> | { status: string; message: string; data?: unknown }
+      | ApiResponse<{ round_qualified: number; users_upgraded: number }>
+      | { status: string; message: string; data?: unknown }
     >('/admin/users/upgrade-all', body);
     return {
       status: 'success',
       message: response.data?.message ?? 'All non-banned users upgraded successfully',
       data: response.data && 'data' in response.data ? response.data.data : undefined,
     };
+  } catch (error) {
+    throw handleAPIError(error);
+  }
+}
+
+export async function logout(): Promise<void> {
+  try {
+    await api.post('/logout');
   } catch (error) {
     throw handleAPIError(error);
   }

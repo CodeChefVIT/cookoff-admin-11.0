@@ -1,16 +1,17 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 
-process.env.NEXT_PUBLIC_API_URL = 'http://localhost:8080';
-
 import api from '../client';
 import {
   banUser,
   getAdminSession,
   getUsers,
+  logout,
   normalizeUser,
   unbanUser,
   upgradeUserToRound,
 } from '../users';
+
+process.env.NEXT_PUBLIC_API_URL = 'http://localhost:8080';
 
 describe('normalizeUser', () => {
   it('maps snake_case backend user response to frontend User model', () => {

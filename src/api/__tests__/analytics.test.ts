@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import api from '../client';
 import {
   getAnalytics,
   getLanguageName,
@@ -8,6 +7,7 @@ import {
   normalizeAnalytics,
   type RawAnalyticsResponse,
 } from '../analytics';
+import api from '../client';
 
 vi.mock('../client', () => ({
   default: {
