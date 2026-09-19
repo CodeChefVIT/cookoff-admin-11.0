@@ -123,8 +123,8 @@ export function QuestionForm({
     setExplanations(initialValues.explanations?.length ? initialValues.explanations : ['']);
     setInputFormats(initialValues.inputFormats?.length ? initialValues.inputFormats : ['']);
     setScratchBlocks(initialValues.scratchBlocks?.length ? initialValues.scratchBlocks : ['']);
-    setSolutions(initialValues.solutions?.length ? initialValues.solutions : [[]]);
-    setSolutionPoints(initialValues.solutionPoints?.length ? initialValues.solutionPoints : [0]);
+    setSolutions(initialValues.solutions ?? []);
+    setSolutionPoints(initialValues.solutionPoints ?? []);
     setSelectedRound(initialValues.round ?? 1);
     setValue('Title', initialValues.title ?? '');
     setValue('Description', initialValues.description ?? '');
@@ -148,11 +148,11 @@ export function QuestionForm({
     SampleTestInput: sampleInputs,
     SampleTestOutput: sampleOutputs,
     Explanation: explanations,
-    ScratchBlocks: scratchBlocks,
+    ScratchBlocks: selectedRound === 1 ? scratchBlocks : [],
     BuyIn: data.BuyIn ? Number(data.BuyIn) : undefined,
     Reward: data.Reward ? Number(data.Reward) : undefined,
-    Solutions: solutions,
-    SolutionPoints: solutionPoints,
+    Solutions: selectedRound === 1 ? solutions.filter(s => s.length > 0) : [],
+    SolutionPoints: selectedRound === 1 ? solutionPoints : [],
   });
 
   const handleSubmitForm = (data: CreateQuestionPayload) => {
