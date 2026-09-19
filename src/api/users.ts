@@ -88,6 +88,11 @@ export interface SetUserRoundProps {
   round?: number;
 }
 
+export interface UpgradeAllUsersPayload {
+  target_round?: number;
+  round?: number;
+}
+
 export interface UpgradeUserPayload {
   round?: number;
   round_qualified?: number;
@@ -296,6 +301,30 @@ export async function SetUserRound({ user_ids, round }: SetUserRoundProps) {
       )
     );
     return results;
+  } catch (error) {
+    throw handleAPIError(error);
+  }
+}
+
+export async function upgradeAllUsers(payload?: UpgradeAllUsersPayload | number) {
+  try {
+    const body: Record<string, unknown> = {};
+    if (typeof payload === 'number') {
+      body.target_round = payload;
+    } else if (payload?.target_round !== undefined) {
+      body.target_round = payload.target_round;
+    } else if (payload?.round !== undefined) {
+      body.target_round = payload.round;
+    }
+
+    const response = await api.post<
+      ApiResponse<{ round_qualified: number; users_upgraded: number }> | { status: string; message: string; data?: unknown }
+    >('/admin/users/upgrade-all', body);
+    return {
+      status: 'success',
+      message: response.data?.message ?? 'All non-banned users upgraded successfully',
+      data: response.data && 'data' in response.data ? response.data.data : undefined,
+    };
   } catch (error) {
     throw handleAPIError(error);
   }
